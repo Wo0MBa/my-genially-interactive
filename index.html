@@ -1,167 +1,169 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Генератор интерактива</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Интерактивные огурцы</title>
   <style>
-  body {
-    font-family: 'Arial', sans-serif;
-    background: #f7f7f7;
-    padding: 20px;
-  }
-  .controls {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-  label {
-    display: block;
-    margin: 15px 0 5px;
-    font-weight: bold;
-    color: #333;
-  }
-  input, select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-  button {
-    padding: 12px 24px;
-    background: #007cba;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 20px 0;
-  }
-  button:hover {
-    background: #005a87;
-  }
-  #words-container {
-    display: grid;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .word-input {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #f9f9f9;
-  }
-  #container {
-    max-width: 900px;
-    margin: 20px auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 20px;
-  }
-  .item {
-    width: 100%;
-    height: 150px;
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-    border-radius: 8px;
-    background: #eee;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .item img {
-    max-width: 80%;
-    max-height: 80%;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-  }
-  .item .text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 20px;
-    font-weight: bold;
-    color: #d44000;
-    text-align: center;
-    width: 90%;
-    padding: 10px;
-    background: rgba(255,255,255,0.95);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    display: none;
-  }
-  #iframe-result {
-    width: 100%;
-    min-height: 100px;
-    background: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 10px;
-    margin: 10px 0;
-    font-family: monospace;
-    font-size: 14px;
-    white-space: pre-wrap;
-    word-break: break-all;
-    display: none;
-  }
-  #copyButton {
-    background: #2e8b57;
-    display: none;
-    margin-top: 10px;
-  }
-  #copyButton:hover {
-    background: #1e6a3f;
-  }
-</style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    .controls {
+      max-width: 800px;
+      margin: 0 auto 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 12px 24px;
+      background: #007cba;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 15px 0;
+    }
+    button:hover {
+      background: #005a87;
+    }
+    #words-container {
+      margin-top: 15px;
+    }
+    .word-input {
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      background: #f9f9f9;
+    }
+    #container {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    .cucumber-container {
+      position: relative;
+      width: 150px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .cucumber {
+      position: absolute;
+      bottom: 0;
+      width: 60px;
+      height: 100px;
+      cursor: pointer;
+      transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: bottom center;
+    }
+    .cucumber img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .cucumber.growing {
+      width: 180px;
+      height: 300px;
+    }
+    .cucumber.disappearing {
+      opacity: 0;
+      transform: scale(0.1);
+    }
+    .result-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      font-weight: bold;
+      color: #d44000;
+      text-align: center;
+      background: rgba(255,255,255,0.9);
+      padding: 10px 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: none;
+    }
+    #iframe-result {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: none;
+    }
+    #copyButton {
+      display: none;
+      background: #2e8b57;
+      margin: 10px auto;
+    }
+    #copyButton:hover {
+      background: #1e6a3f;
+    }
+  </style>
 </head>
 <body>
 
-  <h2 style="text-align: center;">Настрой массовый интерактив</h2>
+  <h2 style="text-align: center;">Настрой свои огурцы</h2>
 
   <div class="controls">
-    <label>Общее изображение (URL):</label>
-    <input type="url" id="imageURL" placeholder="https://example.com/image.png"
-           value="https://wo0mba.github.io/cucumber-enlarger/cucumber.png">
+    <label>URL изображения:</label>
+    <input type="url" id="imgUrl" placeholder="https://..."
+           value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
 
-    <label>Количество элементов:</label>
+    <label>Количество огурцов:</label>
     <select id="countSelect">
+      <option value="3">3</option>
       <option value="4">4</option>
+      <option value="5">5</option>
       <option value="6" selected>6</option>
-      <option value="8">8</option>
-      <option value="9">9</option>
-      <option value="12">12</option>
     </select>
 
-    <button onclick="generateWordInputs()">Создать поля для слов</button>
+    <button onclick="generateInputs()">Создать поля для слов</button>
 
     <div id="words-container"></div>
 
-    <button onclick="applyAll()">Применить всё</button>
-
+    <button onclick="applySettings()">Применить</button>
     <button onclick="generateIframe()" style="background: #8a2be2;">Получить iframe-код</button>
 
     <div id="iframe-result"></div>
-    <button id="copyButton" class="copy-btn" onclick="copyIframe()">Копировать</button>
+    <button id="copyButton" onclick="copyCode()">Копировать</button>
   </div>
 
   <div id="container"></div>
 
   <script>
-    let items = [];
-
-    function generateWordInputs() {
+    function generateInputs() {
       const count = parseInt(document.getElementById('countSelect').value);
       const container = document.getElementById('words-container');
-      container.innerHTML = '<label>Слова для каждого элемента:</label>';
-
+      container.innerHTML = '<label>Слова после исчезновения:</label>';
       for (let i = 1; i <= count; i++) {
         const input = document.createElement('input');
         input.type = 'text';
@@ -172,111 +174,99 @@
       }
     }
 
-    function createItems() {
-      const count = parseInt(document.getElementById('countSelect').value);
-      const container = document.getElementById('container');
-      container.innerHTML = '';
-      items = [];
-
-      const cols = count === 4 ? 2 : count > 6 ? 3 : 2;
-      container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-      for (let i = 1; i <= count; i++) {
-        const item = document.createElement('div');
-        item.className = 'item';
-        item.id = 'item-' + i;
-
-        item.innerHTML = `
-          <img src="" alt="element">
-          <div class="text"></div>
-        `;
-        container.appendChild(item);
-        items.push(item);
-      }
-    }
-
-    function applyAll() {
-      const imageUrl = document.getElementById('imageURL').value.trim();
+    function applySettings() {
+      const imgUrl = document.getElementById('imgUrl').value.trim();
       const wordInputs = document.querySelectorAll('#words-container input');
+      const container = document.getElementById('container');
+      const count = wordInputs.length;
 
-      if (!imageUrl) {
+      if (!imgUrl) {
         alert("Введите URL изображения");
         return;
       }
-
-      if (wordInputs.length === 0) {
+      if (count === 0) {
         alert("Сначала нажмите 'Создать поля для слов'");
         return;
       }
 
-      createItems();
+      container.innerHTML = '';
 
       wordInputs.forEach((input, index) => {
-        const i = index + 1;
-        const item = document.getElementById('item-' + i);
-        const img = item.querySelector('img');
-        const textSpan = item.querySelector('.text');
+        const id = `cucumber-${index + 1}`;
+        const word = input.value.trim() || `Слово ${index + 1}`;
 
-        const word = input.value.trim() || `Слово ${i}`;
+        const cucumberContainer = document.createElement('div');
+        cucumberContainer.className = 'cucumber-container';
 
-        img.src = imageUrl;
-        textSpan.innerText = word;
-        textSpan.style.display = 'none';
+        const cucumber = document.createElement('div');
+        cucumber.className = 'cucumber';
+        cucumber.id = id;
 
-        item.onclick = function (e) {
-          e.preventDefault();
-          img.style.transform = 'scale(1.3)';
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = `Огурец ${index + 1}`;
+        cucumber.appendChild(img);
+
+        const text = document.createElement('div');
+        text.className = 'result-text';
+        text.innerText = word;
+
+        cucumberContainer.appendChild(cucumber);
+        cucumberContainer.appendChild(text);
+        container.appendChild(cucumberContainer);
+
+        cucumber.addEventListener('click', function () {
+          this.classList.add('growing');
           setTimeout(() => {
-            img.style.transform = 'scale(1)';
-            setTimeout(() => {
-              textSpan.style.display = 'block';
-            }, 100);
-          }, 200);
-        };
+            this.classList.add('disappearing');
+          }, 2000);
+          setTimeout(() => {
+            this.style.display = 'none';
+            text.style.display = 'block';
+          }, 3000);
+        });
       });
     }
 
     function generateIframe() {
-      const imageUrl = document.getElementById('imageURL').value.trim();
+      const imgUrl = document.getElementById('imgUrl').value.trim();
       const wordInputs = document.querySelectorAll('#words-container input');
-
-      if (!imageUrl || wordInputs.length === 0) {
-        alert("Сначала задайте изображение и слова.");
+      if (!imgUrl || wordInputs.length === 0) {
+        alert("Сначала примените настройки.");
         return;
       }
 
-      // Формируем данные
-      const words = [];
-      wordInputs.forEach(input => {
-        const word = input.value.trim() || "Готово!";
-        words.push(word.replace(/"/g, '&quot;')); // экранируем кавычки
-      });
+      const words = Array.from(wordInputs).map(input => {
+        const word = (input.value.trim() || "Готово!").replace(/"/g, '&quot;');
+        return `"${word}"`;
+      }).join(', ');
 
-      const count = words.length;
-      const cols = count === 4 ? 2 : count > 6 ? 3 : 2;
+      const count = wordInputs.length;
+      const gap = count > 4 ? '40px' : '60px';
 
-      // Генерируем HTML-код для iframe
-      let itemsHtml = '';
-      words.forEach((word, i) => {
-        itemsHtml += `
-          <div class="item" onclick="this.querySelector('img').style.transform='scale(1.3)'; setTimeout(() => { this.querySelector('img').style.transform='scale(1)'; setTimeout(() => { this.querySelector('.text').style.display='block'; }, 100); }, 200);">
-            <img src="${imageUrl}" style="max-width:80%; max-height:80%; object-fit:contain; transition:transform 0.3s;">
-            <div class="text" style="display:none;">${word}</div>
-          </div>`;
-      });
+      const iframeHTML = `
+<div style="display:flex;justify-content:center;gap:${gap};flex-wrap:wrap;padding:20px;">
+  ${Array(count).fill().map((_, i) => `
+  <div class="cucumber-container" style="position:relative;width:150px;height:300px;display:flex;justify-content:center;align-items:flex-end;">
+    <div class="cucumber" style="position:absolute;bottom:0;width:60px;height:100px;cursor:pointer;transition:all 2s cubic-bezier(0.34,1.56,0.64,1);transform-origin:bottom center;" onclick="
+      this.style.width='180px';this.style.height='300px';
+      setTimeout(() => { this.style.opacity='0'; this.style.transform='scale(0.1)'; }, 2000);
+      setTimeout(() => { this.style.display='none'; this.nextElementSibling.style.display='block'; }, 3000);
+    ">
+      <img src="${imgUrl}" style="width:100%;height:100%;object-fit:contain;" alt="Огурец">
+    </div>
+    <div class="result-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:bold;color:#d44000;text-align:center;background:rgba(255,255,255,0.9);padding:10px;border-radius:8px;display:none;">
+      ${wordInputs[i].value.trim() || 'Готово!'}
+    </div>
+  </div>`).join('')}
+</div>
+`.replace(/\n/g, '').replace(/  /g, ' ');
 
-      const iframeHtml = `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:20px;padding:20px;width:100%;height:100vh;background:#f7f7f7;">
-  ${itemsHtml}
-</div>`;
-
-      const iframeCode = `<iframe srcdoc="${escapeHtml(iframeHtml)}" width="800" height="600" frameborder="0" style="border:none;width:100%;height:600px;"></iframe>`;
-
-      // Показываем результат
-      const resultEl = document.getElementById('iframe-result');
-      const copyBtn = document.getElementById('copyButton');
-      resultEl.innerText = iframeCode;
-      resultEl.style.display = 'block';
-      copyBtn.style.display = 'block';
+      const iframeCode = `<iframe srcdoc="${escapeHtml(iframeHTML)}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
+      
+      document.getElementById('iframe-result').innerText = iframeCode;
+      document.getElementById('iframe-result').style.display = 'block';
+      document.getElementById('copyButton').style.display = 'block';
     }
 
     function escapeHtml(text) {
@@ -284,26 +274,22 @@
       div.textContent = text;
       return div.innerHTML
         .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#x27;')
         .replace(/</g, '<')
         .replace(/>/g, '>');
     }
 
-    function copyIframe() {
+    function copyCode() {
       const code = document.getElementById('iframe-result').innerText;
       navigator.clipboard.writeText(code).then(() => {
-        alert("Код скопирован в буфер обмена!");
-      }).catch(err => {
-        console.error('Ошибка копирования: ', err);
-        alert("Не удалось скопировать. Выделите текст вручную.");
+        alert("Код скопирован!");
+      }).catch(() => {
+        prompt("Скопируйте код:", code);
       });
     }
 
-    // Инициализация
     window.onload = function () {
-      generateWordInputs();
+      generateInputs();
     };
   </script>
-
 </body>
 </html>
