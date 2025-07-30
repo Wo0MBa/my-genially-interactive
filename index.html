@@ -3,132 +3,281 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Интерактив: Кликни и увидишь!</title>
+  <title>Множественный Интерактив с iframe</title>
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    h3 {
-      color: #333;
-    }
-    input {
-      width: 300px;
-      padding: 8px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      padding: 10px 20px;
-      background: #007cba;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    button:hover {
-      background: #005a87;
-    }
-    #interactive-container {
-      width: 300px;
-      height: 300px;
-      position: relative;
-      margin: 30px auto;
-      border: 2px dashed #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    #cucumber {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-      width: 100px;
-      transition: transform 0.3s ease;
-    }
-    #result-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 28px;
-      font-weight: bold;
-      color: #2e8b57;
-      display: none;
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
-  </style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background: #f7f7f7;
+    padding: 20px;
+  }
+  .controls {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: bold;
+    color: #333;
+  }
+  input, select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  button {
+    padding: 12px 24px;
+    background: #007cba;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 20px 0;
+  }
+  button:hover {
+    background: #005a87;
+  }
+  #words-container {
+    display: grid;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .word-input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+  }
+  #container {
+    max-width: 900px;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+  .item {
+    width: 100%;
+    height: 150px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .item img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+  .item .text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
+    color: #d44000;
+    text-align: center;
+    width: 90%;
+    padding: 10px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: none;
+  }
+  #iframe-result {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 15px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    display: none;
+  }
+  #iframe-result:active, #iframe-result:focus {
+    background: #e0e0e0;
+  }
+  .copy-btn {
+    background: #2e8b57;
+    margin-top: 10px;
+  }
+  .copy-btn:hover {
+    background: #1e6a3f;
+  }
+</style>
 </head>
 <body>
 
-  <h3>Настрой свой интерактив</h3>
-  
-  <label>Ссылка на картинку:<br>
-    <input id="imageURL" type="url" placeholder="https://example.com/image.png">
-  </label><br><br>
+  <h2 style="text-align: center;">Настрой массовый интерактив</h2>
 
-  <label>Текст, который появится:<br>
-    <input id="displayText" type="text" placeholder="Молодец!">
-  </label><br><br>
+  <div class="controls">
+    <label>Общее изображение (URL):</label>
+    <input type="url" id="imageURL" placeholder="https://example.com/image.png"
+           value="https://wo0mba.github.io/cucumber-enlarger/cucumber.png">
 
-  <button onclick="applySettings()">Применить</button>
+    <label>Количество элементов:</label>
+    <select id="countSelect">
+      <option value="4">4</option>
+      <option value="6" selected>6</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="12">12</option>
+    </select>
 
-  <div id="interactive-container">
-    <img id="cucumber" src="https://wo0mba.github.io/cucumber-enlarger/cucumber.png">
-    <span id="result-text"></span>
+    <button onclick="generateWordInputs()">Создать поля для слов</button>
+
+    <div id="words-container"></div>
+
+    <button onclick="applyAll()">Применить всё</button>
+
+    <button onclick="generateIframe()" style="background: #8a2be2;">Получить iframe-код</button>
+
+    <div id="iframe-result"></div>
+    <button id="copyButton" class="copy-btn" onclick="copyIframe()" style="display: none;">Копировать</button>
   </div>
 
+  <div id="container"></div>
+
   <script>
-    function applySettings() {
-      const imageUrl = document.getElementById('imageURL').value.trim();
-      const text = document.getElementById('displayText').value.trim();
+    let items = [];
 
-      if (!imageUrl) {
-        alert("Введите корректную ссылку на изображение");
-        return;
+    function generateWordInputs() {
+      const count = parseInt(document.getElementById('countSelect').value);
+      const container = document.getElementById('words-container');
+      container.innerHTML = '<label>Слова для каждого элемента:</label>';
+
+      for (let i = 1; i <= count; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Слово ${i}`;
+        input.className = 'word-input';
+        input.dataset.id = i;
+        container.appendChild(input);
       }
-      if (!text) {
-        alert("Введите текст, который должен появиться");
-        return;
-      }
-
-      const img = document.getElementById('cucumber');
-      const textSpan = document.getElementById('result-text');
-
-      // Меняем изображение
-      img.src = imageUrl;
-      img.style.display = 'block';
-      img.style.transform = 'translate(-50%, -50%) scale(1)';
-      textSpan.style.display = 'none';
-      textSpan.innerText = text;
-
-      // Удаляем старый обработчик и добавляем новый
-      img.onclick = null;
-      img.onclick = function () {
-        img.style.transform = 'translate(-50%, -50%) scale(1.8)';
-        
-        setTimeout(() => {
-          img.style.display = 'none';
-          textSpan.style.display = 'block';
-        }, 300);
-      };
     }
 
-    // Значения по умолчанию
+    function createItems() {
+      const count = parseInt(document.getElementById('countSelect').value);
+      const container = document.getElementById('container');
+      container.innerHTML = '';
+      items = [];
+
+      const cols = count === 4 ? 2 : count > 6 ? 3 : 2;
+      container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+      for (let i = 1; i <= count; i++) {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.id = 'item-' + i;
+
+        item.innerHTML = `
+          <img src="" alt="element">
+          <div class="text"></div>
+        `;
+        container.appendChild(item);
+        items.push(item);
+      }
+    }
+
+    function applyAll() {
+      const imageUrl = document.getElementById('imageURL').value.trim();
+      const wordInputs = document.querySelectorAll('#words-container input');
+
+      if (!imageUrl) {
+        alert("Введите URL изображения");
+        return;
+      }
+
+      if (wordInputs.length === 0) {
+        alert("Сначала нажмите 'Создать поля для слов'");
+        return;
+      }
+
+      createItems();
+
+      wordInputs.forEach((input, index) => {
+        const i = index + 1;
+        const item = document.getElementById('item-' + i);
+        const img = item.querySelector('img');
+        const textSpan = item.querySelector('.text');
+
+        const word = input.value.trim() || `Слово ${i}`;
+
+        img.src = imageUrl;
+        textSpan.innerText = word;
+        textSpan.style.display = 'none';
+
+        item.onclick = function (e) {
+          e.preventDefault();
+          img.style.transform = 'scale(1.3)';
+          setTimeout(() => {
+            img.style.transform = 'scale(1)';
+            setTimeout(() => {
+              textSpan.style.display = 'block';
+            }, 100);
+          }, 200);
+        };
+      });
+    }
+
+    function generateIframe() {
+      const imageUrl = document.getElementById('imageURL').value.trim();
+      const wordInputs = document.querySelectorAll('#words-container input');
+      const count = wordInputs.length;
+
+      if (!imageUrl || count === 0) {
+        alert("Сначала задайте изображение и слова.");
+        return;
+      }
+
+      // Формируем данные
+      const words = [];
+      wordInputs.forEach(input => {
+        words.push(encodeURIComponent(input.value.trim() || "Готово!"));
+      });
+
+      // Твой GitHub Pages URL (ЗАМЕНИ НА СВОЙ РЕПОЗИТОРИЙ!)
+      const base = 'https://wo0mba.github.io/cucumber-enlarger/embed.html'; // ← УБЕДИСЬ, ЧТО ЭТОТ ФАЙЛ ЗАЛИТ
+
+      // Создаём URL с параметрами
+      const hash = `#img=${encodeURIComponent(imageUrl)}&count=${count}&words=${words.join('|')}`;
+      const iframeSrc = base + hash;
+
+      const iframeCode = `<iframe src="${iframeCode}" width="800" height="600" frameborder="0" style="border: none; width: 100%; height: 600px;"></iframe>`;
+
+      // Показываем
+      const resultEl = document.getElementById('iframe-result');
+      resultEl.innerText = iframeCode;
+      resultEl.style.display = 'block';
+      document.getElementById('copyButton').style.display = 'block';
+    }
+
+    function copyIframe() {
+      const code = document.getElementById('iframe-result').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("Код скопирован!");
+      });
+    }
+
     window.onload = function () {
-      document.getElementById('imageURL').value = 'https://wo0mba.github.io/cucumber-enlarger/cucumber.png';
-      document.getElementById('displayText').value = 'Молодец!';
-      applySettings();
+      generateWordInputs();
     };
   </script>
 
