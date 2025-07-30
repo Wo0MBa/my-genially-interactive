@@ -3,270 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Интерактивные огурцы</title>
+  <title>Генератор огурцов</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
+      font-family: 'Arial', sans-serif;
       background: #f7f7f7;
+      padding: 30px;
+      text-align: center;
     }
-    .controls {
-      max-width: 800px;
-      margin: 0 auto 30px;
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
       background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 22px;
+      color: #333;
     }
     label {
       display: block;
+      text-align: left;
       margin: 15px 0 5px;
       font-weight: bold;
       color: #333;
     }
-    input, select {
+    input {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 6px;
+      font-size: 16px;
       box-sizing: border-box;
     }
     button {
+      margin: 20px 0;
       padding: 12px 24px;
       background: #007cba;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 16px;
-      margin: 15px 0;
     }
     button:hover {
       background: #005a87;
     }
-    #words-container {
-      margin-top: 15px;
-    }
-    .word-input {
-      padding: 8px;
-      margin: 5px 0;
-      border: 1px solid #eee;
-      border-radius: 4px;
-      background: #f9f9f9;
-    }
-    #container {
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-      flex-wrap: wrap;
-      padding: 20px;
-    }
-    .cucumber-container {
-      position: relative;
-      width: 150px;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-    }
-    .cucumber {
-      position: absolute;
-      bottom: 0;
-      width: 60px;
-      height: 100px;
-      cursor: pointer;
-      transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform-origin: bottom center;
-    }
-    .cucumber img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    .cucumber.growing {
-      width: 180px;
-      height: 300px;
-    }
-    .cucumber.disappearing {
-      opacity: 0;
-      transform: scale(0.1);
-    }
-    .result-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
-      font-weight: bold;
-      color: #d44000;
-      text-align: center;
-      background: rgba(255,255,255,0.9);
-      padding: 10px 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    #result {
+      margin-top: 20px;
       display: none;
     }
-    #iframe-result {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 15px;
+    #iframeCode {
+      width: 100%;
+      min-height: 100px;
       background: #f0f0f0;
       border: 1px solid #ccc;
       border-radius: 6px;
+      padding: 10px;
       font-family: monospace;
       font-size: 14px;
       white-space: pre-wrap;
       word-break: break-all;
-      display: none;
     }
-    #copyButton {
-      display: none;
+    #copyBtn {
+      display: block;
       background: #2e8b57;
       margin: 10px auto;
     }
-    #copyButton:hover {
+    #copyBtn:hover {
       background: #1e6a3f;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Генератор огурцов для Genially</h1>
+    <p>Введите данные — получите iframe-код с анимацией</p>
 
-  <h2 style="text-align: center;">Настрой свои огурцы</h2>
-
-  <div class="controls">
     <label>URL изображения:</label>
-    <input type="url" id="imgUrl" placeholder="https://..."
-           value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
+    <input type="url" id="imgUrl" placeholder="">
 
-    <label>Количество огурцов:</label>
-    <select id="countSelect">
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6" selected>6</option>
-    </select>
+    <label>Слова (через пробел):</label>
+    <input type="text" id="wordsInput" placeholder="Молодец Ура Класс" value="Молодец Отлично Супер">
 
-    <button onclick="generateInputs()">Создать поля для слов</button>
+    <button onclick="generateIframe()">Получить iframe-код</button>
 
-    <div id="words-container"></div>
-
-    <button onclick="applySettings()">Применить</button>
-    <button onclick="generateIframe()" style="background: #8a2be2;">Получить iframe-код</button>
-
-    <div id="iframe-result"></div>
-    <button id="copyButton" onclick="copyCode()">Копировать</button>
+    <div id="result">
+      <p><strong>Скопируйте код и вставьте в Genially как HTML:</strong></p>
+      <div id="iframeCode"></div>
+      <button id="copyBtn" onclick="copyCode()">Копировать</button>
+    </div>
   </div>
 
-  <div id="container"></div>
-
   <script>
-    function generateInputs() {
-      const count = parseInt(document.getElementById('countSelect').value);
-      const container = document.getElementById('words-container');
-      container.innerHTML = '<label>Слова после исчезновения:</label>';
-      for (let i = 1; i <= count; i++) {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = `Слово ${i}`;
-        input.className = 'word-input';
-        input.dataset.id = i;
-        container.appendChild(input);
-      }
-    }
-
-    function applySettings() {
+    function generateIframe() {
       const imgUrl = document.getElementById('imgUrl').value.trim();
-      const wordInputs = document.querySelectorAll('#words-container input');
-      const container = document.getElementById('container');
-      const count = wordInputs.length;
+      const wordsInput = document.getElementById('wordsInput').value.trim();
 
       if (!imgUrl) {
         alert("Введите URL изображения");
         return;
       }
-      if (count === 0) {
-        alert("Сначала нажмите 'Создать поля для слов'");
+      if (!wordsInput) {
+        alert("Введите хотя бы одно слово");
         return;
       }
 
-      container.innerHTML = '';
+      const words = wordsInput.split(/\s+/);
 
-      wordInputs.forEach((input, index) => {
-        const id = `cucumber-${index + 1}`;
-        const word = input.value.trim() || `Слово ${index + 1}`;
+      // Формируем HTML для srcdoc
+      let itemsHtml = '';
+      const gap = words.length > 4 ? '40px' : '60px';
 
-        const cucumberContainer = document.createElement('div');
-        cucumberContainer.className = 'cucumber-container';
-
-        const cucumber = document.createElement('div');
-        cucumber.className = 'cucumber';
-        cucumber.id = id;
-
-        const img = document.createElement('img');
-        img.src = imgUrl;
-        img.alt = `Огурец ${index + 1}`;
-        cucumber.appendChild(img);
-
-        const text = document.createElement('div');
-        text.className = 'result-text';
-        text.innerText = word;
-
-        cucumberContainer.appendChild(cucumber);
-        cucumberContainer.appendChild(text);
-        container.appendChild(cucumberContainer);
-
-        cucumber.addEventListener('click', function () {
-          this.classList.add('growing');
-          setTimeout(() => {
-            this.classList.add('disappearing');
-          }, 2000);
-          setTimeout(() => {
-            this.style.display = 'none';
-            text.style.display = 'block';
-          }, 3000);
-        });
+      words.forEach(word => {
+        const escapedWord = word.replace(/"/g, '&quot;');
+        itemsHtml += `
+          <div class="cucumber-container" style="position:relative;width:150px;height:300px;display:flex;align-items:flex-end;">
+            <div class="cucumber" style="position:absolute;bottom:0;width:60px;height:100px;cursor:pointer;transition:all 2s cubic-bezier(0.34,1.56,0.64,1);transform-origin:bottom center;" 
+                 onclick="this.style.width='180px';this.style.height='300px';
+                          setTimeout(() => { this.style.opacity='0'; this.style.transform='scale(0.1)'; }, 2000);
+                          setTimeout(() => { this.style.display='none'; this.nextElementSibling.style.display='block'; }, 3000);">
+              <img src="${imgUrl}" style="width:100%;height:100%;object-fit:contain;">
+            </div>
+            <div class="result-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:bold;color:#d44000;background:rgba(255,255,255,0.9);padding:10px;border-radius:8px;display:none;text-align:center;">
+              ${escapedWord}
+            </div>
+          </div>`;
       });
-    }
 
-    function generateIframe() {
-      const imgUrl = document.getElementById('imgUrl').value.trim();
-      const wordInputs = document.querySelectorAll('#words-container input');
-      if (!imgUrl || wordInputs.length === 0) {
-        alert("Сначала примените настройки.");
-        return;
-      }
+      const html = `
+        <div style="display:flex;justify-content:center;gap:${gap};flex-wrap:wrap;padding:20px;">
+          ${itemsHtml}
+        </div>
+      `.replace(/\n/g, '').replace(/  +/g, ' ');
 
-      const words = Array.from(wordInputs).map(input => {
-        const word = (input.value.trim() || "Готово!").replace(/"/g, '&quot;');
-        return `"${word}"`;
-      }).join(', ');
+      const iframe = `<iframe srcdoc="${escapeHtml(html)}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
 
-      const count = wordInputs.length;
-      const gap = count > 4 ? '40px' : '60px';
-
-      const iframeHTML = `
-<div style="display:flex;justify-content:center;gap:${gap};flex-wrap:wrap;padding:20px;">
-  ${Array(count).fill().map((_, i) => `
-  <div class="cucumber-container" style="position:relative;width:150px;height:300px;display:flex;justify-content:center;align-items:flex-end;">
-    <div class="cucumber" style="position:absolute;bottom:0;width:60px;height:100px;cursor:pointer;transition:all 2s cubic-bezier(0.34,1.56,0.64,1);transform-origin:bottom center;" onclick="
-      this.style.width='180px';this.style.height='300px';
-      setTimeout(() => { this.style.opacity='0'; this.style.transform='scale(0.1)'; }, 2000);
-      setTimeout(() => { this.style.display='none'; this.nextElementSibling.style.display='block'; }, 3000);
-    ">
-      <img src="${imgUrl}" style="width:100%;height:100%;object-fit:contain;" alt="Огурец">
-    </div>
-    <div class="result-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:bold;color:#d44000;text-align:center;background:rgba(255,255,255,0.9);padding:10px;border-radius:8px;display:none;">
-      ${wordInputs[i].value.trim() || 'Готово!'}
-    </div>
-  </div>`).join('')}
-</div>
-`.replace(/\n/g, '').replace(/  /g, ' ');
-
-      const iframeCode = `<iframe srcdoc="${escapeHtml(iframeHTML)}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
-      
-      document.getElementById('iframe-result').innerText = iframeCode;
-      document.getElementById('iframe-result').style.display = 'block';
-      document.getElementById('copyButton').style.display = 'block';
+      document.getElementById('iframeCode').innerText = iframe;
+      document.getElementById('result').style.display = 'block';
     }
 
     function escapeHtml(text) {
@@ -279,17 +155,13 @@
     }
 
     function copyCode() {
-      const code = document.getElementById('iframe-result').innerText;
+      const code = document.getElementById('iframeCode').innerText;
       navigator.clipboard.writeText(code).then(() => {
         alert("Код скопирован!");
       }).catch(() => {
-        prompt("Скопируйте код:", code);
+        prompt("Скопируйте вручную:", code);
       });
     }
-
-    window.onload = function () {
-      generateInputs();
-    };
   </script>
 </body>
 </html>
