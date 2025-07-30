@@ -3,104 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Генератор огурцов</title>
+  <title>Создай своего персонажа</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background: #f7f7f7;
+      background: #000;
+      color: #fff;
       padding: 30px;
-      text-align: center;
+      margin: 0;
+      min-height: 100vh;
     }
     .container {
-      max-width: 600px;
+      max-width: 700px;
       margin: 0 auto;
-      background: white;
       padding: 30px;
+      border: 1px solid #00aaff;
       border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
     }
     h1 {
-      font-size: 22px;
-      color: #333;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 10px;
+      color: #00aaff;
+      text-shadow: 0 0 10px rgba(0, 170, 255, 0.7);
+    }
+    p.subtitle {
+      text-align: center;
+      color: #aaa;
+      font-size: 16px;
+      margin-bottom: 25px;
     }
     label {
       display: block;
-      text-align: left;
-      margin: 15px 0 5px;
+      margin: 20px 0 8px;
       font-weight: bold;
-      color: #333;
+      color: #00aaff;
+      font-size: 16px;
     }
     input {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      background: #111;
+      border: 1px solid #00aaff;
       border-radius: 6px;
+      color: #fff;
       font-size: 16px;
       box-sizing: border-box;
+      box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
+    }
+    input:focus {
+      outline: none;
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+    }
+    select {
+      width: 100%;
+      padding: 12px;
+      background: #111;
+      border: 1px solid #00aaff;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
     }
     button {
-      margin: 20px 0;
-      padding: 12px 24px;
-      background: #007cba;
+      margin: 25px 0;
+      padding: 14px 24px;
+      background: #00aaff;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+      transition: 0.3s;
     }
     button:hover {
-      background: #005a87;
+      background: #00ffff;
+      color: #000;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
     }
-    #result {
-      margin-top: 20px;
-      display: none;
+    #result-label {
+      margin: 20px 0 10px;
+      color: #00aaff;
+      font-weight: bold;
+      text-align: left;
     }
     #iframeCode {
       width: 100%;
       min-height: 100px;
-      background: #f0f0f0;
-      border: 1px solid #ccc;
+      background: #111;
+      border: 1px solid #00aaff;
       border-radius: 6px;
-      padding: 10px;
+      padding: 15px;
       font-family: monospace;
       font-size: 14px;
+      color: #fff;
       white-space: pre-wrap;
       word-break: break-all;
+      box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
+      resize: none;
     }
-    #copyBtn {
-      display: block;
-      background: #2e8b57;
-      margin: 10px auto;
-    }
-    #copyBtn:hover {
-      background: #1e6a3f;
+    #iframeCode:focus {
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Генератор огурцов для Genially</h1>
-    <p>Введите данные — получите iframe-код с анимацией</p>
+    <h1>Создай своего персонажа</h1>
+    <p class="subtitle">Задайте внешность и реакцию — получите код для Genially</p>
 
     <label>URL изображения:</label>
-    <input type="url" id="imgUrl" placeholder="">
+    <input type="url" id="imgUrl" placeholder="https://example.com/character.png"
+           value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
 
     <label>Слова (через пробел):</label>
-    <input type="text" id="wordsInput" placeholder="Молодец Ура Класс" value="Молодец Отлично Супер">
+    <input type="text" id="wordsInput" placeholder="Ура Молодец Супер" value="Молодец Отлично Класс">
 
     <button onclick="generateIframe()">Получить iframe-код</button>
 
-    <div id="result">
-      <p><strong>Скопируйте код и вставьте в Genially как HTML:</strong></p>
-      <div id="iframeCode"></div>
-      <button id="copyBtn" onclick="copyCode()">Копировать</button>
-    </div>
+    <div id="result-label">Скопируйте код:</div>
+    <textarea id="iframeCode" readonly></textarea>
   </div>
 
   <script>
     function generateIframe() {
       const imgUrl = document.getElementById('imgUrl').value.trim();
       const wordsInput = document.getElementById('wordsInput').value.trim();
+      const iframeCode = document.getElementById('iframeCode');
 
       if (!imgUrl) {
         alert("Введите URL изображения");
@@ -112,10 +147,8 @@
       }
 
       const words = wordsInput.split(/\s+/);
-
-      // Формируем HTML для srcdoc
-      let itemsHtml = '';
       const gap = words.length > 4 ? '40px' : '60px';
+      let itemsHtml = '';
 
       words.forEach(word => {
         const escapedWord = word.replace(/"/g, '&quot;');
@@ -139,10 +172,13 @@
         </div>
       `.replace(/\n/g, '').replace(/  +/g, ' ');
 
-      const iframe = `<iframe srcdoc="${escapeHtml(html)}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
-
-      document.getElementById('iframeCode').innerText = iframe;
-      document.getElementById('result').style.display = 'block';
+      const code = `<iframe srcdoc="${escapeHtml(html)}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
+      
+      iframeCode.value = code;
+      iframeCode.select(); // Автоматически выделяем текст
+      document.execCommand('copy'); // Копируем в буфер (для совместимости)
+      
+      alert("Код сгенерирован и автоматически скопирован в буфер обмена!");
     }
 
     function escapeHtml(text) {
@@ -152,15 +188,6 @@
         .replace(/"/g, '&quot;')
         .replace(/</g, '<')
         .replace(/>/g, '>');
-    }
-
-    function copyCode() {
-      const code = document.getElementById('iframeCode').innerText;
-      navigator.clipboard.writeText(code).then(() => {
-        alert("Код скопирован!");
-      }).catch(() => {
-        prompt("Скопируйте вручную:", code);
-      });
     }
   </script>
 </body>
