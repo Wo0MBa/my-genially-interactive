@@ -1,79 +1,225 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Генератор персонажей</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Растущие огурцы</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .cucumber-container {
+      position: absolute;
+      width: 150px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      pointer-events: none;
+      transform: translateZ(0);
+      will-change: top, left;
+    }
+
+    .cucumber {
+      position: absolute;
+      bottom: 0;
+      width: 60px;
+      height: 100px;
+      cursor: pointer;
+      transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: bottom center;
+      pointer-events: auto;
+    }
+
+    .cucumber img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: crisp-edges;
+    }
+
+    .growing {
+      width: 144px;
+      height: 240px;
+    }
+
+    .disappearing {
+      opacity: 0 !important;
+      transform: scale(0.1) !important;
+      transition: all 0.8s ease-out !important;
+    }
+
+    .text-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #FFA500;
+      color: #000;
+      font-size: 24px;
+      font-weight: bold;
+      padding: 12px 20px;
+      border: 2px solid #fff;
+      border-radius: 8px;
+      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      pointer-events: none;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div style="padding:20px;font-family:Arial;">
-        <h2>Создай персонажа</h2>
-        
-        <p><label>URL картинки:</label><br>
-        <input type="url" id="imgUrl" style="width:400px;" value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png"></p>
-        
-        <p><label>Слова через пробел:</label><br>
-        <input type="text" id="words" style="width:400px;" value="Твори Верь Мечтай"></p>
-        
-        <button onclick="generate()">Сгенерировать код</button>
-        
-        <p><label>Код для вставки:</label><br>
-        <textarea id="result" style="width:500px;height:200px;"></textarea></p>
-    </div>
+  <script>
+    const words = [
+      "Твори", "Верь", "Мечтай", "Действуй",
+      "Лети", "Сияй", "Измени", "Побеждай"
+    ];
 
-    <script>
-        function generate() {
-            const imgUrl = document.getElementById('imgUrl').value;
-            const words = document.getElementById('words').value.split(' ').filter(w => w);
-            
-            if (!imgUrl || words.length === 0) {
-                alert('Заполните все поля');
-                return;
-            }
+    const containers = [];
+    const count = 8;
+    const startTop = -100;
+    const endTop = 40;
+    const totalWidth = 70;
+    const margin = 15;
+    const step = totalWidth / (count - 1);
 
-            // Создаем HTML для iframe
-            let html = `<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body { margin:20px; text-align:center; background:transparent; }
-        .item { display:inline-block; margin:20px; }
-        .img { width:60px; height:100px; cursor:pointer; background:url('${imgUrl}') center/contain no-repeat; }
-        .img:hover { opacity:0.8; }
-        .text { display:none; font-weight:bold; color:#000; background:#FFA500; padding:10px; margin-top:10px; border-radius:5px; }
-    </style>
-</head>
-<body>
-`;
-            
-            words.forEach(word => {
-                html += `    <div class="item">
-        <div class="img" onclick="this.style.width='120px';this.style.height='200px';setTimeout(()=>{this.style.display='none';this.nextSibling.style.display='block'},1000)"></div>
-        <div class="text">${word}</div>
-    </div>
-`;
-            });
-            
-            html += `</body>
-</html>`;
+    // Постоянная скорость
+    const speed = 0.3; // Очень медленно
 
-            // Экранируем для srcdoc
-            const escaped = html
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;')
-                .replace(/</g, '<')
-                .replace(/>/g, '>');
+    document.addEventListener('DOMContentLoaded', function () {
+      const body = document.body;
 
-            const iframeCode = `<iframe srcdoc="${escaped}" width="600" height="400" frameborder="0"></iframe>`;
-            
-            document.getElementById('result').value = iframeCode;
-            
-            // Копируем в буфер
-            navigator.clipboard.writeText(iframeCode).catch(() => {
-                document.getElementById('result').select();
-                document.execCommand('copy');
-            });
-            
-            alert('Код скопирован!');
+      for (let i = 0; i < count; i++) {
+        const left = margin + step * i;
+
+        const container = document.createElement('div');
+        container.className = 'cucumber-container';
+        container.style.left = `${left}%`;
+        container.style.top = `${startTop}%`;
+        container.dataset.index = i;
+        body.appendChild(container);
+
+        const cucumber = document.createElement('div');
+        cucumber.className = 'cucumber';
+        cucumber.innerHTML = `<img src="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png  " alt="Огурец">`;
+        container.appendChild(cucumber);
+
+        cucumber.moveInterval = null;
+
+        // Начальное направление
+        let angle = Math.random() * Math.PI * 2;
+        const velocity = {
+          x: Math.cos(angle) * speed,
+          y: Math.sin(angle) * speed
+        };
+
+        containers.push({ element: container, cucumber, velocity });
+      }
+
+      setTimeout(startFalling, 500);
+    });
+
+    function startFalling() {
+      const duration = 1800;
+      const interval = 30;
+      const steps = duration / interval;
+      let currentStep = 0;
+
+      const timer = setInterval(() => {
+        currentStep++;
+        const progress = Math.min(currentStep / steps, 1);
+        const currentTop = startTop + (endTop - startTop) * progress;
+
+        containers.forEach(({ element }) => {
+          element.style.top = `${currentTop}%`;
+        });
+
+        if (progress >= 1) {
+          clearInterval(timer);
+          startAllMovement();
         }
-    </script>
+      }, interval);
+    }
+
+    function startAllMovement() {
+      containers.forEach(({ element, cucumber, velocity }) => {
+        element.style.top = `${endTop}%`;
+
+        cucumber.moveInterval = setInterval(() => {
+          let left = parseFloat(element.style.left) || 0;
+          let top = parseFloat(element.style.top) || 0;
+
+          // Двигаемся с постоянной скоростью
+          left += velocity.x;
+          top += velocity.y;
+
+          // Иногда немного меняем направление — плавно
+          if (Math.random() < 0.03) {
+            const turn = (Math.random() - 0.5) * 0.3;
+            const currentAngle = Math.atan2(velocity.y, velocity.x);
+            const newAngle = currentAngle + turn;
+            velocity.x = Math.cos(newAngle) * speed;
+            velocity.y = Math.sin(newAngle) * speed;
+          }
+
+          // Границы — мягкий отскок
+          const minX = 10, maxX = 90;
+          const minY = 20, maxY = 70;
+
+          if (left <= minX || left >= maxX) {
+            velocity.x *= -1;
+            left = left < minX ? minX : maxX;
+          }
+          if (top <= minY || top >= maxY) {
+            velocity.y *= -1;
+            top = top < minY ? minY : maxY;
+          }
+
+          element.style.left = `${left.toFixed(2)}%`;
+          element.style.top = `${top.toFixed(2)}%`;
+
+          // 🔥 Никаких ускорений, никакой физики — только плавное движение
+        }, 100); // Плавно, но не медленно
+      });
+    }
+
+    // Клик
+    document.body.addEventListener('click', function (e) {
+      const cucumber = e.target.closest('.cucumber');
+      if (!cucumber || cucumber.classList.contains('clicked')) return;
+
+      const container = cucumber.parentElement;
+      const index = parseInt(container.dataset.index);
+      if (isNaN(index) || index < 0 || index >= words.length) return;
+
+      cucumber.classList.add('clicked');
+
+      if (cucumber.moveInterval) {
+        clearInterval(cucumber.moveInterval);
+        cucumber.moveInterval = null;
+      }
+
+      cucumber.classList.add('growing');
+
+      setTimeout(() => {
+        cucumber.classList.add('disappearing');
+      }, 1000);
+
+      setTimeout(() => {
+        cucumber.style.display = 'none';
+
+        const textBox = document.createElement('div');
+        textBox.className = 'text-box';
+        textBox.textContent = words[index];
+        container.appendChild(textBox);
+      }, 1800);
+    });
+  </script>
 </body>
 </html>
