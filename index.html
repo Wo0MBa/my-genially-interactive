@@ -149,15 +149,15 @@
       let itemsHtml = '';
 
       words.forEach(word => {
-        // Random position on the screen
-        const left = Math.random() * 80 + '%'; // 0% to 80%
+        // Случайное положение на странице
+        const left = Math.random() * 80 + '%';
         const top = Math.random() * 80 + '%';
         const escapedWord = word.replace(/"/g, '&quot;');
 
         itemsHtml += `
           <div class="cucumber-container" style="position:absolute;left:${left};top:${top};width:150px;height:300px;display:flex;align-items:flex-end;">
             <div class="cucumber" style="position:absolute;bottom:0;width:60px;height:100px;cursor:pointer;transition:all 2s cubic-bezier(0.34,1.56,0.64,1);transform-origin:bottom center;" 
-                 onclick="this.style.width='180px';this.style.height='300px';">
+                 onclick="this.style.width='180px'; this.style.height='300px';">
               <img src="${imgUrl}" style="width:100%;height:100%;object-fit:contain;">
             </div>
             <div class="result-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:bold;color:#000;background:rgba(255,255,255,0.9);padding:10px;border-radius:8px;display:none;text-align:center;">
