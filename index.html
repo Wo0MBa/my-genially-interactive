@@ -239,50 +239,6 @@
       line-height: 1.6;
     }
     
-    .code-output {
-      background: rgba(10, 15, 30, 0.9);
-      border-radius: 10px;
-      padding: 20px;
-      margin-top: 20px;
-      border: 1px solid #2a3a6a;
-      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-    
-    .code-output h3 {
-      color: #6ab7ff;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-    
-    #iframe-code {
-      width: 100%;
-      min-height: 150px;
-      background: #0a0f1f;
-      color: #a0c8ff;
-      padding: 15px;
-      border-radius: 8px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
-      border: 1px solid #2a3a6a;
-      overflow: auto;
-      white-space: pre-wrap;
-    }
-    
-    .copy-btn {
-      background: rgba(40, 50, 90, 0.8);
-      color: #a0c8ff;
-      border: 1px solid #2a3a6a;
-      padding: 8px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: all 0.2s;
-    }
-    
-    .copy-btn:hover {
-      background: rgba(60, 80, 140, 0.8);
-    }
-    
     footer {
       text-align: center;
       padding: 20px;
@@ -310,7 +266,7 @@
   <div class="container">
     <header>
       <h1>Интерактивные растущие огурцы</h1>
-      <p class="subtitle">Настройте изображения и слова, затем скопируйте код для использования в Genially</p>
+      <p class="subtitle">Настройте изображения и слова по своему вкусу</p>
     </header>
     
     <div class="settings-panel">
@@ -333,16 +289,10 @@
         </div>
       </div>
       
-      <button id="apply-settings" class="btn">Применить настройки и сгенерировать код</button>
+      <button id="apply-settings" class="btn">Применить настройки</button>
     </div>
     
     <div class="game-area" id="game-area"></div>
-    
-    <div class="code-output">
-      <h3>Код для Genially (iframe)</h3>
-      <textarea id="iframe-code" readonly>После настройки здесь появится код для вставки в Genially</textarea>
-      <button id="copy-btn" class="copy-btn">Скопировать код</button>
-    </div>
     
     <div class="instructions">
       <h2>Как использовать</h2>
@@ -350,14 +300,13 @@
         <li>Введите URL изображения, которое хотите использовать вместо огурца</li>
         <li>Введите слова через пробел, которые появятся после исчезновения изображений</li>
         <li>Количество изображений автоматически соответствует количеству слов</li>
-        <li>Нажмите "Применить настройки и сгенерировать код"</li>
-        <li>Скопируйте полученный код и вставьте в Genially как iframe</li>
+        <li>Нажмите "Применить настройки" для обновления игры</li>
         <li>Кликайте на изображения, чтобы увидеть волшебные слова!</li>
       </ul>
     </div>
     
     <footer>
-      <p>Интерактивное приложение с настройками | Создано для Genially</p>
+      <p>Интерактивное приложение с настройками</p>
     </footer>
   </div>
 
@@ -375,8 +324,6 @@
     
     // DOM элементы
     const gameArea = document.getElementById('game-area');
-    const iframeCode = document.getElementById('iframe-code');
-    const copyBtn = document.getElementById('copy-btn');
     
     // Инициализация при загрузке страницы
     document.addEventListener('DOMContentLoaded', function () {
@@ -385,9 +332,6 @@
       
       // Обработчик кнопки настроек
       document.getElementById('apply-settings').addEventListener('click', applySettings);
-      
-      // Обработчик кнопки копирования
-      copyBtn.addEventListener('click', copyCode);
     });
     
     // Применение настроек
@@ -430,9 +374,6 @@
       containers = [];
       createCucumbers();
       setTimeout(startFalling, 500);
-      
-      // Генерируем код для iframe
-      generateIframeCode();
     }
     
     // Создание огурцов
@@ -562,276 +503,6 @@
         container.appendChild(textBox);
       }, 1800);
     });
-    
-    // Генерация кода для iframe (исправлена)
-    function generateIframeCode() {
-      // Подготавливаем данные
-      const escapedImageUrl = imageUrl
-        .replace(/\\/g, '\\\\')
-        .replace(/'/g, "\\'")
-        .replace(/"/g, '\\"');
-      
-      const escapedWords = words.map(word => 
-        word.replace(/\\/g, '\\\\')
-            .replace(/'/g, "\\'")
-            .replace(/"/g, '\\"')
-      );
-      
-      // Создаем JavaScript код
-      const jsCode = `
-const words = [${escapedWords.map(word => `'${word}'`).join(', ')}];
-const imageUrl = '${escapedImageUrl}';
-const count = ${count};
-const containers = [];
-const startTop = -100;
-const endTop = 40;
-const totalWidth = 70;
-const margin = 15;
-const speed = 0.3;
-
-document.addEventListener('DOMContentLoaded', function () {
-  const body = document.body;
-
-  for (let i = 0; i < count; i++) {
-    const left = margin + (totalWidth / (count - 1)) * i;
-
-    const container = document.createElement('div');
-    container.className = 'cucumber-container';
-    container.style.left = \`\${left}%\`;
-    container.style.top = \`\${startTop}%\`;
-    container.dataset.index = i;
-    body.appendChild(container);
-
-    const cucumber = document.createElement('div');
-    cucumber.className = 'cucumber';
-    cucumber.innerHTML = \`<img src="\${imageUrl}" alt="Изображение">\`;
-    container.appendChild(cucumber);
-
-    cucumber.moveInterval = null;
-
-    let angle = Math.random() * Math.PI * 2;
-    const velocity = {
-      x: Math.cos(angle) * speed,
-      y: Math.sin(angle) * speed
-    };
-
-    containers.push({ element: container, cucumber, velocity });
-  }
-
-  setTimeout(startFalling, 500);
-});
-
-function startFalling() {
-  const duration = 1800;
-  const interval = 30;
-  const steps = duration / interval;
-  let currentStep = 0;
-
-  const timer = setInterval(() => {
-    currentStep++;
-    const progress = Math.min(currentStep / steps, 1);
-    const currentTop = startTop + (endTop - startTop) * progress;
-
-    containers.forEach(({ element }) => {
-      element.style.top = \`\${currentTop}%\`;
-    });
-
-    if (progress >= 1) {
-      clearInterval(timer);
-      startAllMovement();
-    }
-  }, interval);
-}
-
-function startAllMovement() {
-  containers.forEach(({ element, cucumber, velocity }) => {
-    element.style.top = \`\${endTop}%\`;
-
-    cucumber.moveInterval = setInterval(() => {
-      let left = parseFloat(element.style.left) || 0;
-      let top = parseFloat(element.style.top) || 0;
-
-      left += velocity.x;
-      top += velocity.y;
-
-      if (Math.random() < 0.03) {
-        const turn = (Math.random() - 0.5) * 0.3;
-        const currentAngle = Math.atan2(velocity.y, velocity.x);
-        const newAngle = currentAngle + turn;
-        velocity.x = Math.cos(newAngle) * speed;
-        velocity.y = Math.sin(newAngle) * speed;
-      }
-
-      const minX = 10, maxX = 90;
-      const minY = 20, maxY = 70;
-
-      if (left <= minX || left >= maxX) {
-        velocity.x *= -1;
-        left = left < minX ? minX : maxX;
-      }
-      if (top <= minY || top >= maxY) {
-        velocity.y *= -1;
-        top = top < minY ? minY : maxY;
-      }
-
-      element.style.left = \`\${left.toFixed(2)}%\`;
-      element.style.top = \`\${top.toFixed(2)}%\`;
-    }, 100);
-  });
-}
-
-document.body.addEventListener('click', function (e) {
-  const cucumber = e.target.closest('.cucumber');
-  if (!cucumber || cucumber.classList.contains('clicked')) return;
-
-  const container = cucumber.parentElement;
-  const index = parseInt(container.dataset.index);
-  if (isNaN(index) || index < 0 || index >= words.length) return;
-
-  cucumber.classList.add('clicked');
-
-  if (cucumber.moveInterval) {
-    clearInterval(cucumber.moveInterval);
-    cucumber.moveInterval = null;
-  }
-
-  cucumber.classList.add('growing');
-
-  setTimeout(() => {
-    cucumber.classList.add('disappearing');
-  }, 1000);
-
-  setTimeout(() => {
-    cucumber.style.display = 'none';
-
-    const textBox = document.createElement('div');
-    textBox.className = 'text-box';
-    textBox.textContent = words[index];
-    container.appendChild(textBox);
-  }, 1800);
-});
-`;
-      
-      // Создаем HTML код для iframe
-      const iframeHtml = `<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Интерактивные изображения</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: transparent;
-      overflow: hidden;
-      font-family: 'Arial', sans-serif;
-    }
-
-    .cucumber-container {
-      position: absolute;
-      width: 150px;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      pointer-events: none;
-      transform: translateZ(0);
-      will-change: top, left;
-    }
-
-    .cucumber {
-      position: absolute;
-      bottom: 0;
-      width: 60px;
-      height: 100px;
-      cursor: pointer;
-      transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform-origin: bottom center;
-      pointer-events: auto;
-    }
-
-    .cucumber img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      image-rendering: crisp-edges;
-    }
-
-    .growing {
-      width: 144px;
-      height: 240px;
-    }
-
-    .disappearing {
-      opacity: 0 !important;
-      transform: scale(0.1) !important;
-      transition: all 0.8s ease-out !important;
-    }
-
-    .text-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #1a73e8;
-      color: #fff;
-      font-size: 24px;
-      font-weight: bold;
-      padding: 12px 20px;
-      border: 2px solid #4fc3f7;
-      border-radius: 8px;
-      white-space: nowrap;
-      box-shadow: 0 0 15px rgba(79, 195, 247, 0.6);
-      pointer-events: none;
-      text-align: center;
-      animation: pulse 1.5s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.1); }
-      100% { transform: translate(-50%, -50%) scale(1); }
-    }
-  </style>
-</head>
-<body>
-  <script>
-${jsCode}
-  </script>
-</body>
-</html>`;
-      
-      // Экранируем HTML для srcdoc
-      const escapedHtml = iframeHtml
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '<')
-        .replace(/>/g, '>')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/\n/g, '')
-        .replace(/\r/g, '');
-      
-      // Создаем iframe код
-      const iframeCodeText = `<iframe srcdoc="${escapedHtml}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
-      
-      // Отображаем код в textarea
-      iframeCode.value = iframeCodeText;
-    }
-    
-    // Копирование кода в буфер обмена
-    function copyCode() {
-      iframeCode.select();
-      document.execCommand('copy');
-      
-      // Меняем текст кнопки на короткое время
-      const originalText = copyBtn.textContent;
-      copyBtn.textContent = 'Скопировано!';
-      setTimeout(() => {
-        copyBtn.textContent = originalText;
-      }, 2000);
-    }
   </script>
 </body>
 </html>
