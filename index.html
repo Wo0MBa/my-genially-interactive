@@ -291,24 +291,13 @@
             <label for="image-url">URL изображения:</label>
             <input type="text" id="image-url" value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
           </div>
-          <div class="form-group">
-            <label for="image-count">Количество изображений (1-12):</label>
-            <input type="number" id="image-count" min="1" max="12" value="8">
-          </div>
         </div>
         
         <div class="setting-group">
           <h3 class="setting-title">Слова</h3>
           <div class="form-group">
-            <label for="words-list">Слова (по одному на строку):</label>
-            <textarea id="words-list">Твори
-Верь
-Мечтай
-Действуй
-Лети
-Сияй
-Измени
-Побеждай</textarea>
+            <label for="words-list">Слова (через пробел):</label>
+            <input type="text" id="words-list" value="Твори Верь Мечтай Действуй Лети Сияй Измени Побеждай">
           </div>
         </div>
       </div>
@@ -324,8 +313,8 @@
       <h2>Как использовать</h2>
       <ul>
         <li>Введите URL изображения, которое хотите использовать вместо огурца</li>
-        <li>Укажите количество изображений (от 1 до 12)</li>
-        <li>Добавьте слова, которые появятся после исчезновения изображений (каждое слово с новой строки)</li>
+        <li>Введите слова через пробел, которые появятся после исчезновения изображений</li>
+        <li>Количество изображений автоматически соответствует количеству слов</li>
         <li>Нажмите "Применить настройки" для обновления игры</li>
         <li>Кликайте на изображения, чтобы увидеть волшебные слова!</li>
       </ul>
@@ -338,11 +327,7 @@
 
   <script>
     // Глобальные переменные
-    let words = [
-      "Твори", "Верь", "Мечтай", "Действуй",
-      "Лети", "Сияй", "Измени", "Побеждай"
-    ];
-    
+    let words = ["Твори", "Верь", "Мечтай", "Действуй", "Лети", "Сияй", "Измени", "Побеждай"];
     let imageUrl = "https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png";
     let count = 8;
     let containers = [];
@@ -371,7 +356,6 @@
     function applySettings() {
       // Получаем значения из формы
       const newImageUrl = document.getElementById('image-url').value.trim();
-      const newCount = parseInt(document.getElementById('image-count').value);
       const wordsText = document.getElementById('words-list').value.trim();
       
       // Валидация
@@ -380,29 +364,23 @@
         return;
       }
       
-      if (isNaN(newCount) || newCount < 1 || newCount > 12) {
-        alert('Количество изображений должно быть от 1 до 12');
+      if (!wordsText) {
+        alert('Пожалуйста, введите хотя бы одно слово');
         return;
       }
       
-      if (!wordsText) {
+      // Разбиваем слова по пробелам
+      words = wordsText.split(' ').filter(word => word.trim() !== '');
+      
+      if (words.length === 0) {
         alert('Пожалуйста, введите хотя бы одно слово');
         return;
       }
       
       // Обновляем переменные
       imageUrl = newImageUrl;
-      count = newCount;
-      words = wordsText.split('\n').filter(word => word.trim() !== '');
+      count = words.length;
       remaining = count;
-      
-      // Если слов меньше, чем изображений, дублируем слова
-      while (words.length < count) {
-        words = words.concat(words);
-      }
-      
-      // Обрезаем лишние слова
-      words = words.slice(0, count);
       
       // Обновляем интерфейс
       updateCounter();
