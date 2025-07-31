@@ -569,91 +569,8 @@
       const escapedImageUrl = imageUrl.replace(/"/g, '&quot;');
       const escapedWords = words.map(word => word.replace(/"/g, '&quot;')).join('", "');
       
-      const iframeHtml = `<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Интерактивные изображения</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: transparent;
-      overflow: hidden;
-      font-family: 'Arial', sans-serif;
-    }
-
-    .cucumber-container {
-      position: absolute;
-      width: 150px;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      pointer-events: none;
-      transform: translateZ(0);
-      will-change: top, left;
-    }
-
-    .cucumber {
-      position: absolute;
-      bottom: 0;
-      width: 60px;
-      height: 100px;
-      cursor: pointer;
-      transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform-origin: bottom center;
-      pointer-events: auto;
-    }
-
-    .cucumber img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      image-rendering: crisp-edges;
-    }
-
-    .growing {
-      width: 144px;
-      height: 240px;
-    }
-
-    .disappearing {
-      opacity: 0 !important;
-      transform: scale(0.1) !important;
-      transition: all 0.8s ease-out !important;
-    }
-
-    .text-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #1a73e8;
-      color: #fff;
-      font-size: 24px;
-      font-weight: bold;
-      padding: 12px 20px;
-      border: 2px solid #4fc3f7;
-      border-radius: 8px;
-      white-space: nowrap;
-      box-shadow: 0 0 15px rgba(79, 195, 247, 0.6);
-      pointer-events: none;
-      text-align: center;
-      animation: pulse 1.5s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.1); }
-      100% { transform: translate(-50%, -50%) scale(1); }
-    }
-  </style>
-</head>
-<body>
-  <script>
+      // Создаем JavaScript код с правильным экранированием
+      const jsCode = `
     const words = ["${escapedWords}"];
     const imageUrl = "${escapedImageUrl}";
     const count = ${count};
@@ -785,6 +702,95 @@
         container.appendChild(textBox);
       }, 1800);
     });
+`;
+      
+      // Создаем полный HTML код для iframe
+      const iframeHtml = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Интерактивные изображения</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .cucumber-container {
+      position: absolute;
+      width: 150px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      pointer-events: none;
+      transform: translateZ(0);
+      will-change: top, left;
+    }
+
+    .cucumber {
+      position: absolute;
+      bottom: 0;
+      width: 60px;
+      height: 100px;
+      cursor: pointer;
+      transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: bottom center;
+      pointer-events: auto;
+    }
+
+    .cucumber img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: crisp-edges;
+    }
+
+    .growing {
+      width: 144px;
+      height: 240px;
+    }
+
+    .disappearing {
+      opacity: 0 !important;
+      transform: scale(0.1) !important;
+      transition: all 0.8s ease-out !important;
+    }
+
+    .text-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1a73e8;
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      padding: 12px 20px;
+      border: 2px solid #4fc3f7;
+      border-radius: 8px;
+      white-space: nowrap;
+      box-shadow: 0 0 15px rgba(79, 195, 247, 0.6);
+      pointer-events: none;
+      text-align: center;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <script>
+${jsCode}
   </script>
 </body>
 </html>`;
