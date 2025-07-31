@@ -150,7 +150,7 @@
 
       // Генерируем JavaScript-код для iframe
       const iframeJS = `
-        const words = [${words.map(w => `"${w.replace(/"/g, '&quot;')}"`).join(', ')}];
+        const words = [${words.map(w => JSON.stringify(w)).join(', ')}];
         const containers = [];
         const speed = 0.3;
         const startTop = -100;
@@ -361,11 +361,11 @@
         </head>
         <body>
           <script>
-            ${iframeJS}
+            ${iframeJS.replace(/<\/script>/g, '<\\/script>')}
           </script>
         </body>
         </html>
-      `.replace(/\n/g, '').replace(/  +/g, ' ');
+      `.replace(/\n/g, '').replace(/\s+/g, ' ');
 
       const code = `<iframe srcdoc="${escapeHtml(iframeHTML)}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
       
