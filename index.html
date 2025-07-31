@@ -57,16 +57,6 @@
       border-color: #00ffff;
       box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
     }
-    select {
-      width: 100%;
-      padding: 12px;
-      background: #111;
-      border: 1px solid #00aaff;
-      border-radius: 6px;
-      color: #fff;
-      font-size: 16px;
-      box-shadow: 0 0 8px rgba(0, 170, 255, 0.3);
-    }
     button {
       margin: 25px 0;
       padding: 14px 24px;
@@ -119,10 +109,10 @@
     <p class="subtitle">Добавь своего персонажа и получи расширение для творчества</p>
 
     <label>URL изображения:</label>
-    <input type="url" id="imgUrl" placeholder="">
+    <input type="url" id="imgUrl" placeholder="https://example.com/image.png">
 
     <label>Слова (через пробел):</label>
-    <input type="text" id="wordsInput" placeholder="" value="">
+    <input type="text" id="wordsInput" placeholder="Твори Верь Мечтай" value="">
 
     <button onclick="generateIframe()">Получить iframe-код</button>
 
@@ -148,20 +138,28 @@
       const words = wordsInput.split(/\s+/).filter(word => word.length > 0);
       const count = words.length;
 
-      // Экранируем URL и слова
-      const escapedImgUrl = imgUrl.replace(/"/g, '&quot;').replace(/</g, '<').replace(/>/g, '>');
-      const escapedWords = words.map(word => word.replace(/"/g, '&quot;').replace(/</g, '<').replace(/>/g, '>'));
+      // Экранируем данные для iframe
+      const escapedImgUrl = imgUrl
+        .replace(/"/g, '\\"')
+        .replace(/</g, '\\u003c')
+        .replace(/>/g, '\\u003e');
 
-      // Генерируем JavaScript для iframe
+      const escapedWords = words.map(word => 
+        word.replace(/"/g, '\\"')
+            .replace(/</g, '\\u003c')
+            .replace(/>/g, '\\u003e')
+      );
+
+      // Создаем JavaScript код для iframe
       const iframeJS = `
-const words = [${escapedWords.map(w => `"${w}"`).join(', ')}];
+const words = [${escapedWords.map(w => '"' + w + '"').join(', ')}];
 const containers = [];
 const speed = 0.3;
 const startTop = -100;
 const endTop = 40;
 const totalWidth = 70;
 const margin = 15;
-const step = totalWidth / (${count} - 1 || 1);
+const step = totalWidth / Math.max(1, ${count} - 1);
 
 document.addEventListener('DOMContentLoaded', function () {
   const body = document.body;
@@ -171,14 +169,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const container = document.createElement('div');
     container.className = 'cucumber-container';
-    container.style.left = \`\${left}%\`;
-    container.style.top = \`\${startTop}%\`;
+    container.style.left = left + '%';
+    container.style.top = startTop + '%';
     container.dataset.index = i;
     body.appendChild(container);
 
     const cucumber = document.createElement('div');
     cucumber.className = 'cucumber';
-    cucumber.innerHTML = \`<img src="${escapedImgUrl}" alt="Персонаж">\`;
+    cucumber.innerHTML = '<img src="${escapedImgUrl}" alt="Персонаж">';
     container.appendChild(cucumber);
 
     cucumber.moveInterval = null;
@@ -207,7 +205,7 @@ function startFalling() {
     const currentTop = startTop + (endTop - startTop) * progress;
 
     containers.forEach(({ element }) => {
-      element.style.top = \`\${currentTop}%\`;
+      element.style.top = currentTop + '%';
     });
 
     if (progress >= 1) {
@@ -219,7 +217,7 @@ function startFalling() {
 
 function startAllMovement() {
   containers.forEach(({ element, cucumber, velocity }) => {
-    element.style.top = \`\${endTop}%\`;
+    element.style.top = endTop + '%';
 
     cucumber.moveInterval = setInterval(() => {
       let left = parseFloat(element.style.left) || 0;
@@ -248,8 +246,8 @@ function startAllMovement() {
         top = top < minY ? minY : maxY;
       }
 
-      element.style.left = \`\${left.toFixed(2)}%\`;
-      element.style.top = \`\${top.toFixed(2)}%\`;
+      element.style.left = left.toFixed(2) + '%';
+      element.style.top = top.toFixed(2) + '%';
     }, 100);
   });
 }
@@ -286,7 +284,7 @@ document.body.addEventListener('click', function (e) {
 });
       `;
 
-      // Генерируем HTML для iframe
+      // Создаем HTML для iframe
       const iframeHTML = `
 <!DOCTYPE html>
 <html lang="ru">
@@ -369,7 +367,7 @@ ${iframeJS.replace(/<\/script>/g, '<\\/script>')}
   </script>
 </body>
 </html>
-      `.replace(/\n/g, '').replace(/\s+/g, ' ');
+      `.replace(/\n/g, ' ').replace(/\s+/g, ' ');
 
       const code = `<iframe srcdoc="${escapeHtml(iframeHTML)}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
       
