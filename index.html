@@ -31,11 +31,15 @@
     }
 
     h1 {
-      font-size: 1.8rem; /* Уменьшили размер шрифта */
-  text-align: center;
-  color: #00bfff;
-  text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
-  margin-bottom: 15px;
+      /* Обеспечивает отображение заголовка в одну строку */
+      font-size: 1.8rem;
+      text-align: center;
+      color: #00bfff;
+      text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
+      margin-bottom: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     p.subtitle {
@@ -132,12 +136,12 @@
 
     <div class="form-group">
       <label for="image-url">URL изображения:</label>
-      <input type="url" id="image-url" value="">
+      <input type="url" id="image-url" value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
     </div>
 
     <div class="form-group">
       <label for="words-list">Слова (через пробел):</label>
-      <input type="text" id="words-list" value="">
+      <input type="text" id="words-list" value="Твори Верь Мечтай Действуй Лети Сияй Измени Побеждай">
     </div>
 
     <button id="generate-iframe">Получить iframe-код для Genially</button>
@@ -150,7 +154,7 @@
   <script>
     // Глобальные переменные
     let imageUrl = "https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png";
-    let words = [];
+    let words = ["Твори", "Верь", "Мечтай", "Действуй", "Лети", "Сияй", "Измени", "Побеждай"];
 
     // DOM элементы
     const iframeCode = document.getElementById('iframe-code');
@@ -187,9 +191,11 @@
       generateIframeCode();
 
       // Автоматическое копирование кода
-      iframeCode.select();
-      document.execCommand('copy');
-      alert('iframe-код скопирован в буфер обмена!');
+      setTimeout(() => {
+        iframeCode.select();
+        document.execCommand('copy');
+        alert('iframe-код скопирован в буфер обмена!');
+      }, 100); // Небольшая задержка для корректного отображения кода перед копированием
     });
 
     // Генерация iframe-кода
@@ -198,11 +204,11 @@
       const encodedImage = encodeURIComponent(imageUrl);
       const encodedWords = encodeURIComponent(words.join(' '));
 
-      // Создание URL для виджета
-      const widgetUrl = `https://wo0mba.github.io/my-genially-interactive/widget.html?image=${encodedImage}&words=${encodedWords}`;
+      // Создание URL для виджета (убедитесь, что путь правильный для вашего размещения)
+      const widgetUrl = `widget.html?image=${encodedImage}&words=${encodedWords}`;
 
       // Создание iframe-кода
-      const iframeCodeText = `<iframe src="${widgetUrl}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
+      const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="400" frameborder="0" style="border:none;width:100%;height:400px;overflow:hidden;"></iframe>`;
 
       // Отображаем код в textarea
       iframeCode.value = iframeCodeText;
