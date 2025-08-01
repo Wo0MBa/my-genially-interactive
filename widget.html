@@ -86,9 +86,18 @@
 </head>
 <body>
   <!-- Один аудио файл для всех звуков -->
-  <audio id="main-sound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
-  </audio>
+  <!-- Ваши собственные звуки -->
+<audio id="click-sound" preload="auto">
+  <source src="/sounds/click.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="word-sound" preload="auto">
+  <source src="/sounds/click.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="text-click-sound" preload="auto">
+  <source src="/sounds/click.mp3" type="audio/mpeg">
+</audio>
 
   <script>
     const mainSound = document.getElementById('main-sound');
