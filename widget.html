@@ -87,6 +87,7 @@
 <body>
   <!-- Один аудио файл для всех звуков -->
   <!-- Ваши собственные звуки -->
+<!-- Ваши собственные звуки -->
 <audio id="click-sound" preload="auto">
   <source src="/my-genially-interactive/sounds/click.mp3" type="audio/mpeg">
 </audio>
@@ -119,28 +120,21 @@
     const speed = 0.3;
 
     // Функция для воспроизведения звука
-    function playSound() {
-      try {
-        if (!audioEnabled) {
-          // Первый раз включаем звук
-          mainSound.volume = 0; // Устанавливаем громкость в 0
-          mainSound.play().then(() => {
-            mainSound.pause();
-            mainSound.currentTime = 0;
-            mainSound.volume = 1; // Восстанавливаем громкость
-            audioEnabled = true;
-          }).catch(e => {
-            console.log("Нужно взаимодействие пользователя для включения звука:", e);
-          });
-        } else {
-          // Нормальное воспроизведение
-          mainSound.currentTime = 0;
-          mainSound.play().catch(e => console.log("Ошибка воспроизведения:", e));
-        }
-      } catch (e) {
-        console.log("Ошибка воспроизведения звука:", e);
-      }
+    // Функция для воспроизведения звука с правильной обработкой Promise
+function playSound(soundElement) {
+  try {
+    soundElement.currentTime = 0;
+    const playPromise = soundElement.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.log("Звук заблокирован браузером:", error);
+      });
     }
+  } catch (error) {
+    console.log("Ошибка воспроизведения звука:", error);
+  }
+}
 
     document.addEventListener('DOMContentLoaded', function () {
       const body = document.body;
