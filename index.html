@@ -3,537 +3,226 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Интерактивные растущие огурцы</title>
+  <title>Настрой свои огурцы</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-      color: white;
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
       padding: 20px;
-      overflow-x: hidden;
+      background: #f5f5f5;
     }
     
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    header {
-      text-align: center;
-      padding: 20px 0;
-      margin-bottom: 30px;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     
     h1 {
-      font-size: 2.8rem;
-      margin-bottom: 10px;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-      background: linear-gradient(to right, #ff9966, #ff5e62);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    
-    .settings-panel {
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 15px;
-      padding: 25px;
-      margin-bottom: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    .panel-title {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
       text-align: center;
-      color: #ffcc00;
-    }
-    
-    .settings-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-    }
-    
-    .setting-group {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 20px;
-    }
-    
-    .setting-title {
-      font-size: 1.3rem;
-      margin-bottom: 15px;
-      color: #4fc3f7;
-      display: flex;
-      align-items: center;
-    }
-    
-    .setting-title i {
-      margin-right: 10px;
-      font-size: 1.5rem;
+      color: #333;
+      margin-bottom: 30px;
     }
     
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
     
     label {
       display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
+      margin-bottom: 5px;
+      font-weight: bold;
     }
     
-    input, textarea {
+    input[type="text"], input[type="url"] {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 2px solid #4fc3f7;
-      background: rgba(0, 0, 0, 0.3);
-      color: white;
-      font-size: 1rem;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
     }
     
-    textarea {
-      min-height: 120px;
-      resize: vertical;
+    .radio-group {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
     }
     
-    .btn {
-      background: linear-gradient(to right, #ff9966, #ff5e62);
+    .radio-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    button {
+      background: #4CAF50;
       color: white;
       border: none;
-      padding: 14px 25px;
-      font-size: 1.1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-      box-shadow: 0 4px 15px rgba(255, 94, 98, 0.4);
-    }
-    
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 94, 98, 0.6);
-    }
-    
-    .btn:active {
-      transform: translateY(1px);
-    }
-    
-    .game-area {
-      position: relative;
-      height: 500px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 15px;
-      overflow: hidden;
-      margin-bottom: 30px;
-      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
-    }
-    
-    .cucumber-container {
-      position: absolute;
-      width: 150px;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      pointer-events: none;
-      transform: translateZ(0);
-      will-change: top, left;
-    }
-    
-    .cucumber {
-      position: absolute;
-      bottom: 0;
-      width: 60px;
-      height: 100px;
-      cursor: pointer;
-      transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      transform-origin: bottom center;
-      pointer-events: auto;
-    }
-    
-    .cucumber img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      image-rendering: crisp-edges;
-    }
-    
-    .growing {
-      width: 144px;
-      height: 240px;
-    }
-    
-    .disappearing {
-      opacity: 0 !important;
-      transform: scale(0.1) !important;
-      transition: all 0.8s ease-out !important;
-    }
-    
-    .text-box {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #FFA500;
-      color: #000;
-      font-size: 24px;
-      font-weight: bold;
       padding: 12px 20px;
-      border: 2px solid #fff;
-      border-radius: 8px;
-      white-space: nowrap;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-      pointer-events: none;
-      text-align: center;
-      animation: pulse 1.5s infinite;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+      margin-top: 10px;
     }
     
-    @keyframes pulse {
-      0% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(1.1); }
-      100% { transform: translate(-50%, -50%) scale(1); }
+    button:hover {
+      background: #45a049;
     }
     
-    .instructions {
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 15px;
-      padding: 25px;
-      margin-top: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    #iframe-code {
+      width: 100%;
+      min-height: 100px;
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #f9f9f9;
+      font-family: monospace;
+      white-space: pre-wrap;
     }
     
-    .instructions h2 {
-      color: #4fc3f7;
-      margin-bottom: 15px;
-      text-align: center;
+    .words-container {
+      margin: 20px 0;
     }
     
-    .instructions ul {
-      padding-left: 25px;
-    }
-    
-    .instructions li {
+    .word-input {
       margin-bottom: 10px;
-      line-height: 1.6;
-    }
-    
-    .counter {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-    
-    .counter span {
-      color: #ffcc00;
-    }
-    
-    footer {
-      text-align: center;
-      padding: 20px;
-      margin-top: 30px;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
-    }
-    
-    @media (max-width: 768px) {
-      .settings-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      h1 {
-        font-size: 2.2rem;
-      }
-      
-      .game-area {
-        height: 400px;
-      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Интерактивные растущие огурцы</h1>
-      <p class="subtitle">Нажмите на огурцы, чтобы увидеть волшебные слова! Настройте изображения и слова по своему вкусу.</p>
-    </header>
+    <h1>Настрой свои огурцы</h1>
     
-    <div class="settings-panel">
-      <h2 class="panel-title">Настройки</h2>
-      <div class="settings-grid">
-        <div class="setting-group">
-          <h3 class="setting-title">Изображение</h3>
-          <div class="form-group">
-            <label for="image-url">URL изображения:</label>
-            <input type="text" id="image-url" value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
-          </div>
+    <div class="form-group">
+      <label for="image-url">URL изображения:</label>
+      <input type="url" id="image-url" value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
+    </div>
+    
+    <div class="form-group">
+      <label>Количество огурцов:</label>
+      <div class="radio-group">
+        <div class="radio-item">
+          <input type="radio" id="count-3" name="cucumber-count" value="3" checked>
+          <label for="count-3">3</label>
         </div>
-        
-        <div class="setting-group">
-          <h3 class="setting-title">Слова</h3>
-          <div class="form-group">
-            <label for="words-list">Слова (через пробел):</label>
-            <input type="text" id="words-list" value="Твори Верь Мечтай Действуй Лети Сияй Измени Побеждай">
-          </div>
+        <div class="radio-item">
+          <input type="radio" id="count-4" name="cucumber-count" value="4">
+          <label for="count-4">4</label>
+        </div>
+        <div class="radio-item">
+          <input type="radio" id="count-5" name="cucumber-count" value="5">
+          <label for="count-5">5</label>
+        </div>
+        <div class="radio-item">
+          <input type="radio" id="count-6" name="cucumber-count" value="6">
+          <label for="count-6">6</label>
         </div>
       </div>
-      
-      <button id="apply-settings" class="btn">Применить настройки</button>
     </div>
     
-    <div class="game-area" id="game-area">
-      <div class="counter">Осталось: <span id="counter">8</span></div>
-    </div>
+    <button id="create-words">Создать поля для слов</button>
     
-    <div class="instructions">
-      <h2>Как использовать</h2>
-      <ul>
-        <li>Введите URL изображения, которое хотите использовать вместо огурца</li>
-        <li>Введите слова через пробел, которые появятся после исчезновения изображений</li>
-        <li>Количество изображений автоматически соответствует количеству слов</li>
-        <li>Нажмите "Применить настройки" для обновления игры</li>
-        <li>Кликайте на изображения, чтобы увидеть волшебные слова!</li>
-      </ul>
-    </div>
+    <div class="words-container" id="words-container"></div>
     
-    <footer>
-      <p>Интерактивное приложение с настройками | Создано с любовью к огурцам и волшебству</p>
-    </footer>
+    <button id="apply-settings">Применить</button>
+    <button id="generate-iframe">Получить iframe-код</button>
+    <button id="copy-code">Копировать</button>
+    
+    <textarea id="iframe-code" readonly>Здесь появится код для Genially</textarea>
   </div>
 
   <script>
     // Глобальные переменные
-    let words = ["Твори", "Верь", "Мечтай", "Действуй", "Лети", "Сияй", "Измени", "Побеждай"];
+    let words = [];
     let imageUrl = "https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png";
-    let count = 8;
-    let containers = [];
-    let startTop = -100;
-    let endTop = 40;
-    let totalWidth = 70;
-    let margin = 15;
-    let speed = 0.3;
-    let remaining = count;
+    let count = 3;
     
     // DOM элементы
-    const gameArea = document.getElementById('game-area');
-    const counterElement = document.getElementById('counter');
+    const wordsContainer = document.getElementById('words-container');
+    const iframeCode = document.getElementById('iframe-code');
     
-    // Инициализация при загрузке страницы
-    document.addEventListener('DOMContentLoaded', function () {
-      updateCounter();
-      createCucumbers();
-      setTimeout(startFalling, 500);
+    // Создание полей для слов
+    document.getElementById('create-words').addEventListener('click', function() {
+      const countRadios = document.querySelectorAll('input[name="cucumber-count"]');
+      count = 3; // значение по умолчанию
       
-      // Обработчик кнопки настроек
-      document.getElementById('apply-settings').addEventListener('click', applySettings);
-    });
-    
-    // Применение настроек
-    function applySettings() {
-      // Получаем значения из формы
-      const newImageUrl = document.getElementById('image-url').value.trim();
-      const wordsText = document.getElementById('words-list').value.trim();
-      
-      // Валидация
-      if (!newImageUrl) {
-        alert('Пожалуйста, введите URL изображения');
-        return;
-      }
-      
-      if (!wordsText) {
-        alert('Пожалуйста, введите хотя бы одно слово');
-        return;
-      }
-      
-      // Разбиваем слова по пробелам
-      words = wordsText.split(' ').filter(word => word.trim() !== '');
-      
-      if (words.length === 0) {
-        alert('Пожалуйста, введите хотя бы одно слово');
-        return;
-      }
-      
-      // Обновляем переменные
-      imageUrl = newImageUrl;
-      count = words.length;
-      remaining = count;
-      
-      // Обновляем интерфейс
-      updateCounter();
-      
-      // Удаляем старые огурцы
-      containers.forEach(container => {
-        if (container.element.parentNode) {
-          container.element.parentNode.removeChild(container.element);
+      // Найти выбранное значение
+      for (const radio of countRadios) {
+        if (radio.checked) {
+          count = parseInt(radio.value);
+          break;
         }
-      });
+      }
       
-      // Создаем новые огурцы
-      containers = [];
-      createCucumbers();
-      setTimeout(startFalling, 500);
-    }
-    
-    // Создание огурцов
-    function createCucumbers() {
-      const step = totalWidth / (count - 1);
-      
+      // Создать поля для слов
+      wordsContainer.innerHTML = '';
       for (let i = 0; i < count; i++) {
-        const left = margin + step * i;
-        
-        const container = document.createElement('div');
-        container.className = 'cucumber-container';
-        container.style.left = `${left}%`;
-        container.style.top = `${startTop}%`;
-        container.dataset.index = i;
-        gameArea.appendChild(container);
-        
-        const cucumber = document.createElement('div');
-        cucumber.className = 'cucumber';
-        cucumber.innerHTML = `<img src="${imageUrl}" alt="Изображение">`;
-        container.appendChild(cucumber);
-        
-        cucumber.moveInterval = null;
-        
-        // Начальное направление
-        let angle = Math.random() * Math.PI * 2;
-        const velocity = {
-          x: Math.cos(angle) * speed,
-          y: Math.sin(angle) * speed
-        };
-        
-        containers.push({ element: container, cucumber, velocity });
+        const wordDiv = document.createElement('div');
+        wordDiv.className = 'word-input';
+        wordDiv.innerHTML = `
+          <label for="word-${i}">Слово ${i+1}:</label>
+          <input type="text" id="word-${i}" placeholder="Введите слово">
+        `;
+        wordsContainer.appendChild(wordDiv);
       }
-    }
-    
-    // Анимация падения
-    function startFalling() {
-      const duration = 1800;
-      const interval = 30;
-      const steps = duration / interval;
-      let currentStep = 0;
-      
-      const timer = setInterval(() => {
-        currentStep++;
-        const progress = Math.min(currentStep / steps, 1);
-        const currentTop = startTop + (endTop - startTop) * progress;
-        
-        containers.forEach(({ element }) => {
-          element.style.top = `${currentTop}%`;
-        });
-        
-        if (progress >= 1) {
-          clearInterval(timer);
-          startAllMovement();
-        }
-      }, interval);
-    }
-    
-    // Начало движения
-    function startAllMovement() {
-      containers.forEach(({ element, cucumber, velocity }) => {
-        element.style.top = `${endTop}%`;
-        
-        cucumber.moveInterval = setInterval(() => {
-          let left = parseFloat(element.style.left) || 0;
-          let top = parseFloat(element.style.top) || 0;
-          
-          // Двигаемся с постоянной скоростью
-          left += velocity.x;
-          top += velocity.y;
-          
-          // Иногда немного меняем направление — плавно
-          if (Math.random() < 0.03) {
-            const turn = (Math.random() - 0.5) * 0.3;
-            const currentAngle = Math.atan2(velocity.y, velocity.x);
-            const newAngle = currentAngle + turn;
-            velocity.x = Math.cos(newAngle) * speed;
-            velocity.y = Math.sin(newAngle) * speed;
-          }
-          
-          // Границы — мягкий отскок
-          const minX = 10, maxX = 90;
-          const minY = 20, maxY = 70;
-          
-          if (left <= minX || left >= maxX) {
-            velocity.x *= -1;
-            left = left < minX ? minX : maxX;
-          }
-          if (top <= minY || top >= maxY) {
-            velocity.y *= -1;
-            top = top < minY ? minY : maxY;
-          }
-          
-          element.style.left = `${left.toFixed(2)}%`;
-          element.style.top = `${top.toFixed(2)}%`;
-        }, 100);
-      });
-    }
-    
-    // Клик по огурцу
-    gameArea.addEventListener('click', function (e) {
-      const cucumber = e.target.closest('.cucumber');
-      if (!cucumber || cucumber.classList.contains('clicked')) return;
-      
-      const container = cucumber.parentElement;
-      const index = parseInt(container.dataset.index);
-      if (isNaN(index) || index < 0 || index >= words.length) return;
-      
-      cucumber.classList.add('clicked');
-      
-      if (cucumber.moveInterval) {
-        clearInterval(cucumber.moveInterval);
-        cucumber.moveInterval = null;
-      }
-      
-      cucumber.classList.add('growing');
-      
-      setTimeout(() => {
-        cucumber.classList.add('disappearing');
-      }, 1000);
-      
-      setTimeout(() => {
-        cucumber.style.display = 'none';
-        
-        const textBox = document.createElement('div');
-        textBox.className = 'text-box';
-        textBox.textContent = words[index];
-        container.appendChild(textBox);
-        
-        // Уменьшаем счетчик
-        remaining--;
-        updateCounter();
-      }, 1800);
     });
     
-    // Обновление счетчика
-    function updateCounter() {
-      counterElement.textContent = remaining;
-    }
+    // Применить настройки
+    document.getElementById('apply-settings').addEventListener('click', function() {
+      // Получить URL изображения
+      imageUrl = document.getElementById('image-url').value.trim();
+      
+      // Получить слова
+      words = [];
+      for (let i = 0; i < count; i++) {
+        const wordInput = document.getElementById(`word-${i}`);
+        if (wordInput) {
+          words.push(wordInput.value.trim() || `Слово ${i+1}`);
+        }
+      }
+      
+      alert('Настройки применены!');
+    });
+    
+    // Генерация iframe-кода
+    document.getElementById('generate-iframe').addEventListener('click', function() {
+      // Проверка, что настройки применены
+      if (!imageUrl || words.length === 0) {
+        alert('Сначала примените настройки!');
+        return;
+      }
+      
+      // Экранирование параметров для URL
+      const encodedImage = encodeURIComponent(imageUrl);
+      const encodedWords = encodeURIComponent(words.join(' '));
+      
+      // Создание URL для виджета
+      // Замените "your-username" на ваш GitHub username
+      // Замените "my-genially-interactive" на имя вашего репозитория
+      const widgetUrl = `widget.html?image=${encodedImage}&words=${encodedWords}`;
+      
+      // Создание iframe-кода
+      const iframeCodeText = `<iframe src="${widgetUrl}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
+      
+      // Отображение кода
+      iframeCode.value = iframeCodeText;
+    });
+    
+    // Копирование кода
+    document.getElementById('copy-code').addEventListener('click', function() {
+      iframeCode.select();
+      document.execCommand('copy');
+      alert('Код скопирован в буфер обмена!');
+    });
+    
+    // Инициализация - создать поля для слов по умолчанию
+    window.addEventListener('load', function() {
+      document.getElementById('create-words').click();
+    });
   </script>
 </body>
 </html>
