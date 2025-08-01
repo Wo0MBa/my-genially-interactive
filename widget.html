@@ -72,6 +72,7 @@
       pointer-events: none;
       text-align: center;
       animation: pulse 1.5s infinite;
+      z-index: 100;
     }
     
     @keyframes pulse {
@@ -89,11 +90,11 @@
     const wordsParam = urlParams.get('words') || 'Твори Верь Мечтай Действуй';
     const words = wordsParam.split(' ');
     
-    // Параметры анимации
+    // Параметры анимации - оптимизированы для iframe в Genially
     const count = words.length;
     const containers = [];
-    const startTop = -100;
-    const endTop = 40;
+    const startTop = -50;  // Оптимизировано для центрирования
+    const endTop = 25;     // Оптимизировано для центрирования
     const totalWidth = 70;
     const margin = 15;
     const speed = 0.3;
@@ -171,8 +172,9 @@
             velocity.y = Math.sin(newAngle) * speed;
           }
 
+          // Ограничения движения оптимизированы для iframe
           const minX = 10, maxX = 90;
-          const minY = 20, maxY = 70;
+          const minY = 10, maxY = 60;  // Ограничено по высоте
 
           if (left <= minX || left >= maxX) {
             velocity.x *= -1;
