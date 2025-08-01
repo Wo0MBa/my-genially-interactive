@@ -140,17 +140,17 @@
       <input type="text" id="words-list" value="Твори Верь Мечтай Действуй Лети Сияй Измени Побеждай">
     </div>
 
-    <button id="generate-iframe">Получить iframe-код</button>
+    <button id="generate-iframe">Получить iframe-код для Genially</button>
 
     <textarea id="iframe-code" readonly>Здесь появится iframe-код для Genially</textarea>
 
-    <p class="instructions">Кликните на кнопку "Получить iframe-код", чтобы сгенерировать и скопировать код.</p>
+    <p class="instructions">*Вставьте код в Genially.</p>
   </div>
 
   <script>
     // Глобальные переменные
     let imageUrl = "https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png";
-    let words = ["Твори", "Верь", "Мечтай", "Действуй", "Лети", "Сияй", "Измени", "Побеждай"];
+    let words = [];
 
     // DOM элементы
     const iframeCode = document.getElementById('iframe-code');
