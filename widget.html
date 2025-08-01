@@ -85,24 +85,29 @@
   </style>
 </head>
 <body>
-  <!-- Один аудио файл для всех звуков -->
-  <!-- Ваши собственные звуки -->
-<!-- Ваши собственные звуки -->
-<audio id="click-sound" preload="auto">
-  <source src="/my-genially-interactive/sounds/click.mp3" type="audio/mpeg">
-</audio>
+  <!-- Звуки с правильными путями -->
+  <audio id="click-sound" preload="auto">
+    <source src="/my-genially-interactive/sounds/click.mp3" type="audio/mpeg">
+  </audio>
 
-<audio id="word-sound" preload="auto">
-  <source src="/my-genially-interactive/sounds/click.mp3" type="audio/mpeg">
-</audio>
+  <audio id="word-sound" preload="auto">
+    <source src="/my-genially-interactive/sounds/click.mp3" type="audio/mpeg">
+  </audio>
 
-<audio id="text-click-sound" preload="auto">
-  <source src="/my-genially-interactive/sounds/click.mp3" type="audio/mpeg">
-</audio>
+  <audio id="text-click-sound" preload="auto">
+    <source src="/my-genially-interactive/sounds/click.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    const mainSound = document.getElementById('main-sound');
-    let audioEnabled = false;
+    // Получаем звуковые элементы с проверкой
+    const clickSound = document.getElementById('click-sound');
+    const wordSound = document.getElementById('word-sound');
+    const textClickSound = document.getElementById('text-click-sound');
+
+    // Проверка наличия звуков
+    if (!clickSound || !wordSound || !textClickSound) {
+      console.log("Предупреждение: некоторые звуковые элементы не найдены");
+    }
 
     // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -119,30 +124,35 @@
     const margin = 15;
     const speed = 0.3;
 
-    // Функция для воспроизведения звука
-    // Функция для воспроизведения звука с правильной обработкой Promise
-function playSound(soundElement) {
-  try {
-    soundElement.currentTime = 0;
-    const playPromise = soundElement.play();
-    
-    if (playPromise !== undefined) {
-      playPromise.catch(error => {
-        console.log("Звук заблокирован браузером:", error);
-      });
+    // Улучшенная функция для воспроизведения звука
+    function playSound(soundElement) {
+      // Проверка, что элемент существует
+      if (!soundElement) {
+        console.log("Ошибка: звуковой элемент не найден");
+        return;
+      }
+      
+      try {
+        // Сброс времени воспроизведения
+        if (soundElement.currentTime) {
+          soundElement.currentTime = 0;
+        }
+        
+        // Воспроизведение звука с обработкой Promise
+        const playPromise = soundElement.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log("Звук заблокирован браузером:", error);
+          });
+        }
+      } catch (error) {
+        console.log("Ошибка воспроизведения звука:", error);
+      }
     }
-  } catch (error) {
-    console.log("Ошибка воспроизведения звука:", error);
-  }
-}
 
     document.addEventListener('DOMContentLoaded', function () {
       const body = document.body;
-
-      // Добавляем обработчик на весь документ для активации звука
-      document.addEventListener('click', function() {
-        playSound();
-      }, { once: true });
 
       for (let i = 0; i < count; i++) {
         const left = margin + (totalWidth / (count - 1)) * i;
@@ -236,8 +246,8 @@ function playSound(soundElement) {
     document.body.addEventListener('click', function (e) {
       const cucumber = e.target.closest('.cucumber');
       if (cucumber && !cucumber.classList.contains('clicked')) {
-        // Воспроизводим звук при каждом клике на изображение
-        playSound();
+        // Воспроизводим звук при клике на изображение
+        playSound(clickSound);
 
         const container = cucumber.parentElement;
         const index = parseInt(container.dataset.index);
@@ -264,13 +274,14 @@ function playSound(soundElement) {
             textBox.textContent = words[index];
             container.appendChild(textBox);
 
-            // Звук при появлении слов
-            playSound();
+            // Воспроизводим звук при появлении слов
+            playSound(wordSound);
 
             // Обработчик клика на текстовом блоке
             textBox.addEventListener('click', function (event) {
               event.stopPropagation();
-              playSound(); // Звук при клике на словах
+              // Воспроизводим звук при клике на словах
+              playSound(textClickSound);
               this.remove();
             });
           }, 1800);
