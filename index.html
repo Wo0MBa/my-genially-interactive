@@ -31,15 +31,14 @@
     }
 
     h1 {
-      /* Обеспечивает отображение заголовка в одну строку */
-      font-size: 1.8rem;
+      /* Уменьшенный размер шрифта для предотвращения съезжания */
+      font-size: 1.5rem;
       text-align: center;
       color: #00bfff;
       text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
       margin-bottom: 15px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      /* Разрешаем перенос для лучшего отображения на маленьких экранах */
+      white-space: normal;
     }
 
     p.subtitle {
@@ -153,8 +152,8 @@
 
   <script>
     // Глобальные переменные
-    let imageUrl = "https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png";
-    let words = ["Твори", "Верь", "Мечтай", "Действуй", "Лети", "Сияй", "Измени", "Побеждай"];
+    let imageUrl = "";
+    let words = [];
 
     // DOM элементы
     const iframeCode = document.getElementById('iframe-code');
