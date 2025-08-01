@@ -69,9 +69,11 @@
       border-radius: 8px;
       white-space: nowrap;
       box-shadow: 0 0 15px rgba(79, 195, 247, 0.6);
-      pointer-events: none;
+      pointer-events: auto; /* Позволяет кликать по тексту */
       text-align: center;
       animation: pulse 1.5s infinite;
+      z-index: 10; /* Убедимся, что текст поверх других элементов */
+      user-select: none; /* Предотвращает выделение текста при двойном клике */
     }
 
     @keyframes pulse {
@@ -82,18 +84,29 @@
   </style>
 </head>
 <body>
+  <!-- Скрытое аудио для звукового эффекта -->
+  <audio id="click-sound" preload="auto">
+    <!-- Вы можете использовать любой подходящий звуковой файл -->
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    <!-- Альтернативный вариант с data URI для простоты (тихий щелчок) -->
+    <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA" type="audio/wav">
+  </audio>
+
   <script>
+    // Получаем звуковой элемент
+    const clickSound = document.getElementById('click-sound');
+
     // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
     const imageUrl = urlParams.get('image') || 'https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png';
     const wordsParam = urlParams.get('words') || 'Твори Верь Мечтай Действуй';
     const words = wordsParam.split(' ');
-    
-    // Параметры анимации
+
+    // Параметры анимации - оптимизированы для iframe в Genially
     const count = words.length;
     const containers = [];
-    const startTop = -50;  // Начальное положение
-    const endTop = 25;     // Конечное положение
+    const startTop = -50;  // Оптимизировано для центрирования
+    const endTop = 25;     // Оптимизировано для центрирования
     const totalWidth = 70;
     const margin = 15;
     const speed = 0.3;
@@ -171,8 +184,9 @@
             velocity.y = Math.sin(newAngle) * speed;
           }
 
+          // Ограничения движения оптимизированы для iframe
           const minX = 10, maxX = 90;
-          const minY = 10, maxY = 60;
+          const minY = 10, maxY = 60;  // Ограничено по высоте
 
           if (left <= minX || left >= maxX) {
             velocity.x *= -1;
@@ -191,33 +205,49 @@
 
     document.body.addEventListener('click', function (e) {
       const cucumber = e.target.closest('.cucumber');
-      if (!cucumber || cucumber.classList.contains('clicked')) return;
+      if (cucumber && !cucumber.classList.contains('clicked')) {
+        // Воспроизводим звук при клике на изображение
+        try {
+          clickSound.currentTime = 0;
+          clickSound.play().catch(e => console.log("Автовоспроизведение звука заблокировано браузером:", e));
+        } catch (e) {
+          console.log("Ошибка воспроизведения звука:", e);
+        }
 
-      const container = cucumber.parentElement;
-      const index = parseInt(container.dataset.index);
-      if (isNaN(index) || index < 0 || index >= words.length) return;
+        const container = cucumber.parentElement;
+        const index = parseInt(container.dataset.index);
+        if (!isNaN(index) && index >= 0 && index < words.length) {
 
-      cucumber.classList.add('clicked');
+          cucumber.classList.add('clicked');
 
-      if (cucumber.moveInterval) {
-        clearInterval(cucumber.moveInterval);
-        cucumber.moveInterval = null;
+          if (cucumber.moveInterval) {
+            clearInterval(cucumber.moveInterval);
+            cucumber.moveInterval = null;
+          }
+
+          cucumber.classList.add('growing');
+
+          setTimeout(() => {
+            cucumber.classList.add('disappearing');
+          }, 1000);
+
+          setTimeout(() => {
+            cucumber.style.display = 'none';
+
+            const textBox = document.createElement('div');
+            textBox.className = 'text-box';
+            textBox.textContent = words[index];
+            container.appendChild(textBox);
+
+            // Обработчик клика на текстовом блоке для его удаления
+            textBox.addEventListener('click', function (event) {
+              event.stopPropagation(); // Предотвращаем всплытие события
+              this.remove(); // Удаляем текстовый блок
+            });
+          }, 1800);
+        }
       }
-
-      cucumber.classList.add('growing');
-
-      setTimeout(() => {
-        cucumber.classList.add('disappearing');
-      }, 1000);
-
-      setTimeout(() => {
-        cucumber.style.display = 'none';
-
-        const textBox = document.createElement('div');
-        textBox.className = 'text-box';
-        textBox.textContent = words[index];
-        container.appendChild(textBox);
-      }, 1800);
+      // Если клик был по текстовому блоку, он уже обработан своим собственным обработчиком
     });
   </script>
 </body>
