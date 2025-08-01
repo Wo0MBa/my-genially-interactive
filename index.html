@@ -3,224 +3,210 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Настрой свои огурцы</title>
+  <title>Авторское расширение от Феи Русского</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      max-width: 800px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0c1427, #1a1f33, #0c1427);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 600px;
       margin: 0 auto;
       padding: 20px;
-      background: #f5f5f5;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
     }
-    
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    
+
     h1 {
+      font-size: 2rem;
       text-align: center;
-      color: #333;
-      margin-bottom: 30px;
+      color: #00bfff;
+      text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
+      margin-bottom: 15px;
     }
-    
-    .form-group {
+
+    p.subtitle {
+      font-size: 1rem;
+      text-align: center;
+      color: #aaa;
       margin-bottom: 20px;
     }
-    
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
+      color: #00bfff;
     }
-    
+
     input[type="text"], input[type="url"] {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      box-sizing: border-box;
+      padding: 12px;
+      border: 2px solid #00bfff;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      color: #e0e0e0;
+      font-size: 1rem;
+      transition: all 0.3s ease;
     }
-    
-    .radio-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
+
+    input[type="text"]:focus, input[type="url"]:focus {
+      outline: none;
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
     }
-    
-    .radio-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    
+
     button {
-      background: #4CAF50;
+      background: #00bfff;
       color: white;
       border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
+      padding: 14px 25px;
+      font-size: 1.1rem;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 16px;
-      margin-right: 10px;
-      margin-top: 10px;
-    }
-    
-    button:hover {
-      background: #45a049;
-    }
-    
-    #iframe-code {
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: block;
       width: 100%;
-      min-height: 100px;
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background: #f9f9f9;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 255, 255, 0.6);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      background: rgba(0, 0, 0, 0.2);
+      color: #e0e0e0;
+      padding: 15px;
+      border-radius: 8px;
       font-family: monospace;
-      white-space: pre-wrap;
+      font-size: 0.9rem;
+      border: 2px solid #00bfff;
+      resize: vertical;
+      transition: all 0.3s ease;
     }
-    
-    .words-container {
-      margin: 20px 0;
+
+    textarea:focus {
+      outline: none;
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
     }
-    
-    .word-input {
-      margin-bottom: 10px;
+
+    .instructions {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Настрой свои огурцы</h1>
-    
+    <h1>Авторское расширение от Феи Русского</h1>
+    <p class="subtitle">Добавьте своего персонажа и получите расширение для творчества</p>
+
     <div class="form-group">
       <label for="image-url">URL изображения:</label>
       <input type="url" id="image-url" value="https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png">
     </div>
-    
+
     <div class="form-group">
-      <label>Количество огурцов:</label>
-      <div class="radio-group">
-        <div class="radio-item">
-          <input type="radio" id="count-3" name="cucumber-count" value="3" checked>
-          <label for="count-3">3</label>
-        </div>
-        <div class="radio-item">
-          <input type="radio" id="count-4" name="cucumber-count" value="4">
-          <label for="count-4">4</label>
-        </div>
-        <div class="radio-item">
-          <input type="radio" id="count-5" name="cucumber-count" value="5">
-          <label for="count-5">5</label>
-        </div>
-        <div class="radio-item">
-          <input type="radio" id="count-6" name="cucumber-count" value="6">
-          <label for="count-6">6</label>
-        </div>
-      </div>
+      <label for="words-list">Слова (через пробел):</label>
+      <input type="text" id="words-list" value="Твори Верь Мечтай Действуй Лети Сияй Измени Побеждай">
     </div>
-    
-    <button id="create-words">Создать поля для слов</button>
-    
-    <div class="words-container" id="words-container"></div>
-    
-    <button id="apply-settings">Применить</button>
+
     <button id="generate-iframe">Получить iframe-код</button>
-    <button id="copy-code">Копировать</button>
-    
-    <textarea id="iframe-code" readonly>Здесь появится код для Genially</textarea>
+
+    <textarea id="iframe-code" readonly>Здесь появится iframe-код для Genially</textarea>
+
+    <p class="instructions">Кликните на кнопку "Получить iframe-код", чтобы сгенерировать и скопировать код.</p>
   </div>
 
   <script>
     // Глобальные переменные
-    let words = [];
     let imageUrl = "https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png";
-    let count = 3;
-    
+    let words = ["Твори", "Верь", "Мечтай", "Действуй", "Лети", "Сияй", "Измени", "Побеждай"];
+
     // DOM элементы
-    const wordsContainer = document.getElementById('words-container');
     const iframeCode = document.getElementById('iframe-code');
-    
-    // Создание полей для слов
-    document.getElementById('create-words').addEventListener('click', function() {
-      const countRadios = document.querySelectorAll('input[name="cucumber-count"]');
-      count = 3; // значение по умолчанию
-      
-      // Найти выбранное значение
-      for (const radio of countRadios) {
-        if (radio.checked) {
-          count = parseInt(radio.value);
-          break;
-        }
-      }
-      
-      // Создать поля для слов
-      wordsContainer.innerHTML = '';
-      for (let i = 0; i < count; i++) {
-        const wordDiv = document.createElement('div');
-        wordDiv.className = 'word-input';
-        wordDiv.innerHTML = `
-          <label for="word-${i}">Слово ${i+1}:</label>
-          <input type="text" id="word-${i}" placeholder="Введите слово">
-        `;
-        wordsContainer.appendChild(wordDiv);
-      }
-    });
-    
-    // Применить настройки
-    document.getElementById('apply-settings').addEventListener('click', function() {
-      // Получить URL изображения
-      imageUrl = document.getElementById('image-url').value.trim();
-      
-      // Получить слова
-      words = [];
-      for (let i = 0; i < count; i++) {
-        const wordInput = document.getElementById(`word-${i}`);
-        if (wordInput) {
-          words.push(wordInput.value.trim() || `Слово ${i+1}`);
-        }
-      }
-      
-      alert('Настройки применены!');
-    });
-    
-    // Генерация iframe-кода
-    document.getElementById('generate-iframe').addEventListener('click', function() {
-      // Проверка, что настройки применены
-      if (!imageUrl || words.length === 0) {
-        alert('Сначала примените настройки!');
+
+    // Обработчик кнопки генерации iframe
+    document.getElementById('generate-iframe').addEventListener('click', function () {
+      // Получаем значения из формы
+      const newImageUrl = document.getElementById('image-url').value.trim();
+      const wordsText = document.getElementById('words-list').value.trim();
+
+      // Валидация
+      if (!newImageUrl) {
+        alert('Пожалуйста, введите URL изображения');
         return;
       }
-      
-      // Экранирование параметров для URL
-      const encodedImage = encodeURIComponent(imageUrl);
-      const encodedWords = encodeURIComponent(words.join(' '));
-      
-      // Создание URL для виджета
-      const widgetUrl = `https://wo0mba.github.io/my-genially-interactive/widget.html?image=${encodedImage}&words=${encodedWords}`;
-      
-      // Создание iframe-кода с оптимальными размерами для Genially
-      const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="400" frameborder="0" style="border:none;width:100%;height:400px;overflow:hidden;"></iframe>`;
-      
-      // Отображение кода
-      iframeCode.value = iframeCodeText;
-    });
-    
-    // Копирование кода
-    document.getElementById('copy-code').addEventListener('click', function() {
+
+      if (!wordsText) {
+        alert('Пожалуйста, введите хотя бы одно слово');
+        return;
+      }
+
+      // Разбиваем слова по пробелам
+      words = wordsText.split(' ').filter(word => word.trim() !== '');
+
+      if (words.length === 0) {
+        alert('Пожалуйста, введите хотя бы одно слово');
+        return;
+      }
+
+      // Обновляем переменные
+      imageUrl = newImageUrl;
+
+      // Генерируем iframe-код
+      generateIframeCode();
+
+      // Автоматическое копирование кода
       iframeCode.select();
       document.execCommand('copy');
-      alert('Код скопирован в буфер обмена!');
+      alert('iframe-код скопирован в буфер обмена!');
     });
-    
-    // Инициализация - создать поля для слов по умолчанию
-    window.addEventListener('load', function() {
-      document.getElementById('create-words').click();
-    });
+
+    // Генерация iframe-кода
+    function generateIframeCode() {
+      // Экранирование параметров
+      const encodedImage = encodeURIComponent(imageUrl);
+      const encodedWords = encodeURIComponent(words.join(' '));
+
+      // Создание URL для виджета
+      const widgetUrl = `https://wo0mba.github.io/my-genially-interactive/widget.html?image=${encodedImage}&words=${encodedWords}`;
+
+      // Создание iframe-кода
+      const iframeCodeText = `<iframe src="${widgetUrl}" width="800" height="500" frameborder="0" style="border:none;width:100%;height:500px;"></iframe>`;
+
+      // Отображаем код в textarea
+      iframeCode.value = iframeCodeText;
+    }
   </script>
 </body>
 </html>
