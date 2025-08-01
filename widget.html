@@ -69,11 +69,12 @@
       border-radius: 8px;
       white-space: nowrap;
       box-shadow: 0 0 15px rgba(79, 195, 247, 0.6);
-      pointer-events: auto; /* Позволяет кликать по тексту */
+      pointer-events: auto;
       text-align: center;
       animation: pulse 1.5s infinite;
-      z-index: 10; /* Убедимся, что текст поверх других элементов */
-      user-select: none; /* Предотвращает выделение текста при двойном клике */
+      z-index: 10;
+      user-select: none;
+      cursor: pointer;
     }
 
     @keyframes pulse {
@@ -84,17 +85,14 @@
   </style>
 </head>
 <body>
-  <!-- Скрытое аудио для звукового эффекта -->
-  <audio id="click-sound" preload="auto">
-    <!-- Вы можете использовать любой подходящий звуковой файл -->
+  <!-- Один аудио файл для всех звуков -->
+  <audio id="main-sound" preload="auto">
     <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
-    <!-- Альтернативный вариант с data URI для простоты (тихий щелчок) -->
-    <source src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA" type="audio/wav">
   </audio>
 
   <script>
-    // Получаем звуковой элемент
-    const clickSound = document.getElementById('click-sound');
+    const mainSound = document.getElementById('main-sound');
+    let audioEnabled = false;
 
     // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -102,17 +100,46 @@
     const wordsParam = urlParams.get('words') || 'Твори Верь Мечтай Действуй';
     const words = wordsParam.split(' ');
 
-    // Параметры анимации - оптимизированы для iframe в Genially
+    // Параметры анимации
     const count = words.length;
     const containers = [];
-    const startTop = -50;  // Оптимизировано для центрирования
-    const endTop = 25;     // Оптимизировано для центрирования
+    const startTop = -50;
+    const endTop = 25;
     const totalWidth = 70;
     const margin = 15;
     const speed = 0.3;
 
+    // Функция для воспроизведения звука
+    function playSound() {
+      try {
+        if (!audioEnabled) {
+          // Первый раз включаем звук
+          mainSound.volume = 0; // Устанавливаем громкость в 0
+          mainSound.play().then(() => {
+            mainSound.pause();
+            mainSound.currentTime = 0;
+            mainSound.volume = 1; // Восстанавливаем громкость
+            audioEnabled = true;
+          }).catch(e => {
+            console.log("Нужно взаимодействие пользователя для включения звука:", e);
+          });
+        } else {
+          // Нормальное воспроизведение
+          mainSound.currentTime = 0;
+          mainSound.play().catch(e => console.log("Ошибка воспроизведения:", e));
+        }
+      } catch (e) {
+        console.log("Ошибка воспроизведения звука:", e);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
       const body = document.body;
+
+      // Добавляем обработчик на весь документ для активации звука
+      document.addEventListener('click', function() {
+        playSound();
+      }, { once: true });
 
       for (let i = 0; i < count; i++) {
         const left = margin + (totalWidth / (count - 1)) * i;
@@ -184,9 +211,9 @@
             velocity.y = Math.sin(newAngle) * speed;
           }
 
-          // Ограничения движения оптимизированы для iframe
+          // Ограничения движения
           const minX = 10, maxX = 90;
-          const minY = 10, maxY = 60;  // Ограничено по высоте
+          const minY = 10, maxY = 60;
 
           if (left <= minX || left >= maxX) {
             velocity.x *= -1;
@@ -206,13 +233,8 @@
     document.body.addEventListener('click', function (e) {
       const cucumber = e.target.closest('.cucumber');
       if (cucumber && !cucumber.classList.contains('clicked')) {
-        // Воспроизводим звук при клике на изображение
-        try {
-          clickSound.currentTime = 0;
-          clickSound.play().catch(e => console.log("Автовоспроизведение звука заблокировано браузером:", e));
-        } catch (e) {
-          console.log("Ошибка воспроизведения звука:", e);
-        }
+        // Воспроизводим звук при каждом клике на изображение
+        playSound();
 
         const container = cucumber.parentElement;
         const index = parseInt(container.dataset.index);
@@ -239,15 +261,18 @@
             textBox.textContent = words[index];
             container.appendChild(textBox);
 
-            // Обработчик клика на текстовом блоке для его удаления
+            // Звук при появлении слов
+            playSound();
+
+            // Обработчик клика на текстовом блоке
             textBox.addEventListener('click', function (event) {
-              event.stopPropagation(); // Предотвращаем всплытие события
-              this.remove(); // Удаляем текстовый блок
+              event.stopPropagation();
+              playSound(); // Звук при клике на словах
+              this.remove();
             });
           }, 1800);
         }
       }
-      // Если клик был по текстовому блоку, он уже обработан своим собственным обработчиком
     });
   </script>
 </body>
