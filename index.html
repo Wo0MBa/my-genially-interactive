@@ -31,13 +31,11 @@
     }
 
     h1 {
-      /* Уменьшенный размер шрифта для предотвращения съезжания */
       font-size: 1.5rem;
       text-align: center;
       color: #00bfff;
       text-shadow: 0 0 10px rgba(0, 191, 255, 0.7);
       margin-bottom: 15px;
-      /* Разрешаем перенос для лучшего отображения на маленьких экранах */
       white-space: normal;
     }
 
@@ -130,8 +128,9 @@
 </head>
 <body>
   <div class="container">
-    <h1>Авторское расширение от Феи Русского</h1>
-    <p class="subtitle">Добавьте своего персонажа и получите расширение для творчества</p>
+    <h1>Авторское расширение от Феи русского</h1>
+    <h1>Поймай скорее</h1>
+    <p class="subtitle">Введите URL изображения и получите готовое расширение</p>
 
     <div class="form-group">
       <label for="image-url">URL изображения:</label>
@@ -147,7 +146,15 @@
 
     <textarea id="iframe-code" readonly>Здесь появится iframe-код для Genially</textarea>
 
-    <p class="instructions">*Вставьте код в Genially.</p>
+    <div class="instructions">
+      <p><strong>Как использовать:</strong></p>
+      <ol>
+        <li>Введите URL изображения</li>
+        <li>Нажмите "Получить iframe-код"</li>
+        <li>Скопируйте код и вставьте в Genially как веб-виджет</li>
+        <li>Творите!</li>
+      </ol>
+    </div>
   </div>
 
   <script>
@@ -204,7 +211,9 @@
       const encodedWords = encodeURIComponent(words.join(' '));
 
       // Создание URL для виджета (убедитесь, что путь правильный для вашего размещения)
-      const widgetUrl = `https://wo0mba.github.io/my-genially-interactive/widget.html?image=${encodedImage}&words=${encodedWords}`;
+      const currentUrl = window.location.href;
+      const baseUrl = currentUrl.replace(/\/[^\/]*$/, '/');
+      const widgetUrl = `${baseUrl}widget.html?image=${encodedImage}&words=${encodedWords}`;
 
       // Создание iframe-кода
       const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="400" frameborder="0" style="border:none;width:100%;height:400px;overflow:hidden;"></iframe>`;
