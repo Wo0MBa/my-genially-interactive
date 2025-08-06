@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -28,8 +29,8 @@
     .cucumber {
       position: absolute;
       bottom: 0;
-      width: 60px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       cursor: pointer;
       transition: all 2s cubic-bezier(0.34, 1.56, 0.64, 1);
       transform-origin: bottom center;
@@ -44,8 +45,8 @@
     }
 
     .growing {
-      width: 144px;
-      height: 240px;
+      width: 200px;
+      height: 200px;
     }
 
     .disappearing {
@@ -110,15 +111,15 @@
 
     // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
-    const imageUrl = urlParams.get('image') || 'https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png        ';
+    const imageUrl = urlParams.get('image') || 'https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png';
     const wordsParam = urlParams.get('words') || 'Твори Верь Мечтай Действуй';
     const words = wordsParam.split(' ');
 
     // Параметры анимации
     const count = words.length;
     const containers = [];
-    const startTop = -50;
-    const endTop = 25;
+    const startTop = -30;
+    const endTop = 30;
     const totalWidth = 70;
     const margin = 15;
     const speed = 0.3;
@@ -223,9 +224,9 @@
             velocity.y = Math.sin(newAngle) * speed;
           }
 
-          // Ограничения движения
-          const minX = 10, maxX = 90;
-          const minY = 10, maxY = 60;
+          // Ограничения движения с учетом размеров картинок
+          const minX = 5, maxX = 95;
+          const minY = 5, maxY = 70;
 
           if (left <= minX || left >= maxX) {
             velocity.x *= -1;
