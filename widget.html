@@ -118,8 +118,8 @@
     // Параметры анимации
     const count = words.length;
     const containers = [];
-    const startTop = -30;
-    const endTop = 30;
+    const startTop = -50;  // ВЕРНУЛ ОБРАТНО -50
+    const endTop = 25;
     const totalWidth = 70;
     const margin = 15;
     const speed = 0.3;
@@ -224,9 +224,9 @@
             velocity.y = Math.sin(newAngle) * speed;
           }
 
-          // Ограничения движения с учетом размеров картинок
-          const minX = 5, maxX = 95;
-          const minY = 5, maxY = 70;
+          // Ограничения движения
+          const minX = 10, maxX = 90;
+          const minY = 10, maxY = 60;
 
           if (left <= minX || left >= maxX) {
             velocity.x *= -1;
