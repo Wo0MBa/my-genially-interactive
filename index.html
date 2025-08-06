@@ -216,8 +216,8 @@
       const baseUrl = currentUrl.replace(/\/[^\/]*$/, '/');
       const widgetUrl = `${baseUrl}widget.html?image=${encodedImage}&words=${encodedWords}`;
 
-      // Создание iframe-кода
-      const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="400" frameborder="0" style="border:none;width:100%;height:400px;overflow:hidden;"></iframe>`;
+      // Создание iframe-кода с увеличенной высотой для корректного отображения
+      const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="600" frameborder="0" style="border:none;width:100%;height:600px;"></iframe>`;
 
       // Отображаем код в textarea
       iframeCode.value = iframeCodeText;
