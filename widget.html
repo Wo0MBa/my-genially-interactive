@@ -111,15 +111,15 @@
 
     // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
-    const imageUrl = urlParams.get('image') || 'https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png';
+    const imageUrl = urlParams.get('image') || 'https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png    ';
     const wordsParam = urlParams.get('words') || 'Твори Верь Мечтай Действуй';
     const words = wordsParam.split(' ');
 
     // Параметры анимации
     const count = words.length;
     const containers = [];
-    const startTop = -30;
-    const endTop = 30;
+    const startTop = -50;
+    const endTop = 25;
     const totalWidth = 70;
     const margin = 15;
     const speed = 0.3;
@@ -224,9 +224,9 @@
             velocity.y = Math.sin(newAngle) * speed;
           }
 
-          // Ограничения движения с учетом размеров iframe
+          // Ограничения движения
           const minX = 10, maxX = 90;
-          const minY = 10, maxY = 70;
+          const minY = 10, maxY = 60;
 
           if (left <= minX || left >= maxX) {
             velocity.x *= -1;
