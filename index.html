@@ -205,21 +205,21 @@
     });
 
     // Генерация iframe-кода
-    function generateIframeCode() {
-      // Экранирование параметров
-      const encodedImage = encodeURIComponent(imageUrl);
-      const encodedWords = encodeURIComponent(words.join(' '));
+function generateIframeCode() {
+  // Экранирование параметров
+  const encodedImage = encodeURIComponent(imageUrl);
+  const encodedWords = encodeURIComponent(words.join(' '));
 
-      // Создание URL для виджета (убедитесь, что путь правильный для вашего размещения)
-      const currentUrl = window.location.href;
-      const baseUrl = currentUrl.replace(/\/[^\/]*$/, '/');
-      const widgetUrl = `${baseUrl}widget.html?image=${encodedImage}&words=${encodedWords}`;
+  // Создание URL для виджета (убедитесь, что путь правильный для вашего размещения)
+  const currentUrl = window.location.href;
+  const baseUrl = currentUrl.replace(/\/[^\/]*$/, '/');
+  const widgetUrl = `${baseUrl}widget.html?image=${encodedImage}&words=${encodedWords}`;
 
-      // Создание iframe-кода с увеличенной высотой для корректного отображения
-      const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="600" frameborder="0" style="border:none;width:100%;height:600px;overflow:hidden;"></iframe>`;
+  // Создание iframe-кода с увеличенной высотой для корректного отображения
+  const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="600" frameborder="0" style="border:none;width:100%;height:600px;overflow:hidden;"></iframe>`;
 
-      // Отображаем код в textarea
-      iframeCode.value = iframeCodeText;
+  // Отображаем код в textarea
+  iframeCode.value = iframeCodeText;
     }
   </script>
 </body>
