@@ -118,7 +118,7 @@
     // Параметры анимации
     const count = words.length;
     const containers = [];
-    const startTop = -50;  // ВЕРНУЛ ОБРАТНО -50
+    const startTop = -50;
     const endTop = 25;
     const totalWidth = 70;
     const margin = 15;
@@ -274,8 +274,8 @@
             textBox.textContent = words[index];
             container.appendChild(textBox);
 
-            // Воспроизводим звук при появлении слов
-            playSound(wordSound);
+            // УБРАЛ звук при появлении слов - теперь только при клике на слово
+            // playSound(wordSound); - ЭТА СТРОКА УДАЛЕНА
 
             // Обработчик клика на текстовом блоке
             textBox.addEventListener('click', function (event) {
