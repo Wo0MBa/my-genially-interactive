@@ -32,8 +32,8 @@
       transform-origin: bottom center;
       pointer-events: auto;
       /* Ограничение максимального размера */
-      max-width: 120px;
-      max-height: 120px;
+      max-width: 100px;
+      max-height: 100px;
     }
 
     .cucumber img {
@@ -111,34 +111,31 @@
 
     // Получаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
-    const imageUrl = urlParams.get('image') || 'https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png  ';
+    const imageUrl = urlParams.get('image') || 'https://i.pinimg.com/originals/fc/a7/66/fca766643693b021645b276bd61ad09e.png';
     const wordsParam = urlParams.get('words') || 'Твори Верь Мечтай Действуй';
     const words = wordsParam.split(' ');
 
     // Параметры анимации
     const count = words.length;
     const containers = [];
-    const startTop = -50;
-    const endTop = 25;
-    const totalWidth = 70;
-    const margin = 15;
+    const startTop = -30;
+    const endTop = 30;
+    const totalWidth = 80;
+    const margin = 10;
     const speed = 0.3;
 
     // Улучшенная функция для воспроизведения звука
     function playSound(soundElement) {
-      // Проверка, что элемент существует
       if (!soundElement) {
         console.log("Ошибка: звуковой элемент не найден");
         return;
       }
       
       try {
-        // Сброс времени воспроизведения
         if (soundElement.currentTime) {
           soundElement.currentTime = 0;
         }
         
-        // Воспроизведение звука с обработкой Promise
         const playPromise = soundElement.play();
         
         if (playPromise !== undefined) {
@@ -169,11 +166,10 @@
         cucumber.innerHTML = `<img src="${imageUrl}" alt="Изображение">`;
         container.appendChild(cucumber);
 
-        // Добавляем обработчик загрузки изображения для правильного позиционирования
+        // Добавляем обработчик загрузки изображения
         const img = cucumber.querySelector('img');
         img.onload = function() {
-          // Центрируем контейнер относительно ширины изображения
-          const imgWidth = Math.min(this.offsetWidth, 120); // Ограничиваем максимальную ширину
+          const imgWidth = Math.min(this.offsetWidth, 100);
           container.style.width = `${imgWidth}px`;
           container.style.marginLeft = `-${imgWidth/2}px`;
         };
@@ -233,9 +229,9 @@
             velocity.y = Math.sin(newAngle) * speed;
           }
 
-          // Ограничения движения
-          const minX = 10, maxX = 90;
-          const minY = 10, maxY = 60;
+          // Ограничения движения с учетом размеров iframe
+          const minX = 5, maxX = 95;
+          const minY = 5, maxY = 70;
 
           if (left <= minX || left >= maxX) {
             velocity.x *= -1;
@@ -255,7 +251,6 @@
     document.body.addEventListener('click', function (e) {
       const cucumber = e.target.closest('.cucumber');
       if (cucumber && !cucumber.classList.contains('clicked')) {
-        // Воспроизводим звук при клике на изображение
         playSound(clickSound);
 
         const container = cucumber.parentElement;
@@ -283,13 +278,10 @@
             textBox.textContent = words[index];
             container.appendChild(textBox);
 
-            // Воспроизводим звук при появлении слов
             playSound(wordSound);
 
-            // Обработчик клика на текстовом блоке
             textBox.addEventListener('click', function (event) {
               event.stopPropagation();
-              // Воспроизводим звук при клике на словах
               playSound(textClickSound);
               this.remove();
             });
