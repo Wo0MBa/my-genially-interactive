@@ -24,11 +24,10 @@
       max-width: 600px;
       margin: 0 auto;
       padding: 20px;
-      /* Убрал все визуальные границы */
-      background: transparent;
-      border-radius: 0;
-      box-shadow: none;
-      backdrop-filter: none;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
     }
 
     h1 {
@@ -216,8 +215,8 @@
       const baseUrl = currentUrl.replace(/\/[^\/]*$/, '/');
       const widgetUrl = `${baseUrl}widget.html?image=${encodedImage}&words=${encodedWords}`;
 
-      // Создание iframe-кода с увеличенной высотой для корректного отображения
-      const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="600" frameborder="0" style="border:none;width:100%;height:600px;"></iframe>`;
+      // Создание iframe-кода с правильными параметрами
+      const iframeCodeText = `<iframe src="${widgetUrl}" width="100%" height="600" frameborder="0" style="border:none;width:100%;height:600px;overflow:hidden;"></iframe>`;
 
       // Отображаем код в textarea
       iframeCode.value = iframeCodeText;
